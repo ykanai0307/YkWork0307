@@ -2,7 +2,6 @@ import sys
 import glob
 import os
 import urllib.request
-import MySQLdb
 import matplotlib.pyplot as plt # 折れ線グラフ
 from ..module.tokenizerMain import tokenizerMainClass
 from ..module.dirPath import dirPathClass
