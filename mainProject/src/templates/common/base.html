@@ -1,0 +1,20 @@
+{% load static %}
+<html>
+<head lang="ja">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="{% static 'css/common.css' %}" rel="stylesheet">
+  <script type="text/javascript" src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+  <title>スタート画面</title>
+</head>
+<body>
+  <div id="header">
+  </div><!-- header -->
+  <div id="container" class="clearfix">
+{% block body %}
+{% endblock %}
+  </div><!-- container -->
+</body>
+</html>

@@ -1,0 +1,156 @@
+*{
+  margin:0;
+  padding:0px;
+  font-size:98%;
+  letter-spacing:1.2px;
+}
+#header {
+  background-color: #732C2C;
+  padding-left: 20px;
+  height: 40px;
+}
+#container{
+  height:150%;
+  background-color: #EFF7CF;
+  padding-top:3%;
+}
+div#WebFormErea{
+  float:left;
+  position:relative;
+  top:25px;
+  width:67%;
+  margin-left:3%;
+  padding-bottom:20px;
+  margin-right:4%;
+}
+div#MenuErea{
+  float:left;
+  width:20%;
+  background-color: white;
+}
+
+table#WebForm{
+  width:97%;
+  padding-left:3%;
+  padding-bottom:20px;
+  background-color: white;
+}
+
+/*File*/
+span.Mark{
+  font-size:80%;
+  color:#732C2C;
+}
+.FormTitle{
+  color:#424539;
+}
+
+/*File upload*/
+#attachment label {
+ display: inline-block;
+ position: relative;
+ background: #BAD9B5;
+ color:#424539;
+ padding: 4px 3px;
+ transition: all 0.3s;
+}
+#attachment label:hover {
+ background: #c8ebc3;
+ transition: all 0.4s;
+}
+#attachment label input {
+ position: absolute;
+ left:0;
+ top:0;
+ opacity: 0;
+ width: 100%;
+ height: 100%;
+}
+#attachment .filename {
+ color:#424539;
+ font-weight: 16px;
+ margin:0 0 0 8px;
+}
+/*File upload end*/
+
+/*DB analyze*/
+table#SalesTable{
+  border-collapse: collapse;
+  color:#424539;
+}
+table#SalesTable tr.header td{
+  border: solid 1px #A64040;
+  background: #B34444;
+  color:white;
+  padding:1px 2px 1px 3px;
+}
+table#SalesTable tr.body td{
+  border: solid 1px #A64040;
+  padding:1px 2px 1px 3px;
+}
+.GrafImg{
+  width:50%;
+  min-height:60%;
+}
+
+/*DB analyze end*/
+
+input[type="button"].SubmitDesign{
+  background-color: #ABA361;
+  padding:0.5px 2px 0.5px 2px;
+  border:1px dotted #ABA572;
+  color:white;
+}
+input[type="button"].SubmitDesign:hover{
+  background-color: #ABA994;
+}
+
+.message{
+   background-color: #EFF7CF;
+   color:#732C2C;
+   padding:0.5px 2px 0.5px 2px;
+}
+
+/*common param*/
+.margin-top-30px{
+  margin-top:30px;
+}
+.padding-top-20px{
+  padding-top:20px;
+}
+.padding-top-10px{
+  padding-top:10px;
+}
+.padding-top-7px{
+  padding-top:7px;
+}
+.padding-top-5px{
+  padding-top:5px;
+}
+.padding-top-3px{
+  padding-top:3px;
+}
+.padding-top-2px{
+  padding-top:2px;
+}
+.padding-left-20px{
+  padding-left:20px;
+}
+
+/*clear fix*/
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.clearfix:before {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.clearfix {
+  display: block;
+}
+
