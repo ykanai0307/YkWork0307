@@ -2,7 +2,7 @@ import sys
 import glob
 import os
 import urllib.request
-import matplotlib.pyplot as plt # 折れ線グラフ
+#import matplotlib.pyplot as plt # 折れ線グラフ
 from ..module.tokenizerMain import tokenizerMainClass
 from ..module.dirPath import dirPathClass
 from ..module.DataBase import DataBaseClass
@@ -46,11 +46,11 @@ class mainView(View):
           x = yearlist
           y = salesMoneylist
           
-          plt.plot(x, y);
-          plt.xlabel("売上日(年)",size="medium", color="blue",fontname="MS Gothic")
-          plt.ylabel("商品売上",labelpad=1, weight="bold" ,size = "medium",rotation="horizontal",fontname="MS Gothic")
-          plt.savefig(dirPathIns.GetSelfToStaticImgDir() + 'out.png')
-          plt.close()
+          #plt.plot(x, y);
+          #plt.xlabel("売上日(年)",size="medium", color="blue",fontname="MS Gothic")
+          #plt.ylabel("商品売上",labelpad=1, weight="bold" ,size = "medium",rotation="horizontal",fontname="MS Gothic")
+          #plt.savefig(dirPathIns.GetSelfToStaticImgDir() + 'out.png')
+          #plt.close()
           context = {
             'message': "",
             'SalesResult': self._var,
