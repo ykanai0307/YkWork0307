@@ -1,4 +1,4 @@
-import MeCab
+#import MeCab
 import csv
 import sys
 from .dirPath import dirPathClass
@@ -48,9 +48,10 @@ class tokenizerMainClass:
     def TextExtractWord(self,text,wordFreq_dic):
         try:
             # 特定の品詞の単語を抽出
-            mecab = MeCab.Tagger()
-            mecab.parse('')
-            node = mecab.parseToNode(text)
+            #mecab = MeCab.Tagger()
+            #mecab.parse('')
+            node="" #node = mecab.parseToNode(text)
+            
             while node:
                 if node.feature.split(",")[0] == "名詞":
                     word = node.surface
