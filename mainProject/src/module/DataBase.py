@@ -1,4 +1,4 @@
-import MySQLdb
+#import MySQLdb
 import sqlite3
 from ..define.DBModeEnum import DBMode
 
@@ -19,16 +19,17 @@ class DataBaseClass:
 
     # 接続
     def DbConnect(self,sqlMode):
-        if (sqlMode == DBMode.MYSQL):
-            self._conn = MySQLdb.connect(
-                host=self._host,
-                port=self._port,
-                user=self._user,
-                password=self._pwd,
-                database=self._db,
-                charset=self._charset
-            )
-        elif (sqlMode == DBMode.SQLITE):
+        #if (sqlMode == DBMode.MYSQL):
+        #    self._conn = MySQLdb.connect(
+        #        host=self._host,
+        #        port=self._port,
+        #        user=self._user,
+        #        password=self._pwd,
+        #        database=self._db,
+        #        charset=self._charset
+        #    )
+        #elif (sqlMode == DBMode.SQLITE):
+        if (sqlMode == DBMode.SQLITE):
             dbname = 'ykdb.db'
             self._conn = sqlite3.connect(dbname)
         else:
