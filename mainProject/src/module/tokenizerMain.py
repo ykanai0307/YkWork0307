@@ -1,9 +1,9 @@
-#import MeCab
+import MeCab
 import csv
 import sys
 from .dirPath import dirPathClass
 from os.path import abspath, join, split
-#from docx import Document
+from docx import Document
 
 class tokenizerMainClass:
 
@@ -48,8 +48,8 @@ class tokenizerMainClass:
     def TextExtractWord(self,text,wordFreq_dic):
         try:
             # 特定の品詞の単語を抽出
-            #mecab = MeCab.Tagger()
-            #mecab.parse('')
+            mecab = MeCab.Tagger()
+            mecab.parse('')
             node="" #node = mecab.parseToNode(text)
             
             while node:
@@ -98,7 +98,7 @@ class tokenizerMainClass:
         wordFreq_dic = {}
         try:
             # ドキュメント開く
-            doc = ""#doc = Document( self._dirPathIns.GetSelfToStaticUploadDirPath() + input_file)
+            doc = Document( self._dirPathIns.GetSelfToStaticUploadDirPath() + input_file)
             if not doc is None:
                 text = ''
                 for para in doc.paragraphs:
@@ -120,7 +120,7 @@ class tokenizerMainClass:
         try:
             for in_file in input_file_list:
                 # ドキュメント開く
-                doc = ""#doc = Document( self._dirPathIns.GetSelfToStaticUploadDirPath() + in_file)
+                doc = Document( self._dirPathIns.GetSelfToStaticUploadDirPath() + in_file)
                 if not doc is None:
                     text = ''
                     for para in doc.paragraphs:

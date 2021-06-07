@@ -33,7 +33,7 @@ class sqliteView(View):
           self.view_result(docs,"table")
           result = self.GetResult()
           
-          sql = "select * from " + doc[0] + " where 1 = 1;"
+          sql = "select * from " + result[0] + " where 1 = 1;"
           docs = self.sql_fetch_all(sql)
           self.view_result(docs,"data")
           data_result = self.GetResult()
@@ -66,7 +66,6 @@ class sqliteView(View):
               dbBase.DbConnect(DBMode.SQLITE)
               dbBase.DbCursor()
               sv._sql = CreateTableSql().CreateTableSales();
-              print(sv._sql)
               dbBase.DbExecute(sv._sql)
               sv._sql=""
               dbBase.DbCommit()
