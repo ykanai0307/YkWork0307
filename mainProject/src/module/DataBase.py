@@ -34,16 +34,41 @@ class DataBaseClass:
             self._conn = sqlite3.connect(dbname)
         else:
             pass
+    
+    # db close
+    def DbClose(self):
+        if(self._conn != None):
+            self._conn = None;
 
-    # カーソルセット
+    # cursor set
     def DbCursor(self):
         if(self._conn != None):
-            self._cursor = self._conn.cursor()
+            self._cursor = self._conn.cursor();
+            
+    # cursor close
+    def DbCloseCursor(self):
+        if(self._cursor != None):
+            self._cursor.close();
             
     # execute
     def DbExecute(self,sql):
         if(self._cursor != None):
-            self._cursor.execute(sql)
+            self._cursor.execute(sql);
+            sql="";
+            
+    # execute
+    def DbExecuteMany(self,sql,data):
+        if(self._cursor != None):
+            print(data);
+            self._cursor.executemany(sql,data);
+            sql="";
+
+    # fetch all
+    def FetchAll(self):
+        if(self._cursor != None):
+            return self._cursor.fetchall();
+        else:
+            return None;
             
     # commit
     def DbCommit(self):

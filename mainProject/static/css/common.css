@@ -1,7 +1,7 @@
 *{
   margin:0;
   padding:0px;
-  font-size:98%;
+  font-size:100%;
   letter-spacing:1.2px;
 }
 #header {
@@ -18,7 +18,7 @@ div#WebFormErea{
   float:left;
   position:relative;
   top:25px;
-  width:67%;
+  width:65%;
   margin-left:3%;
   padding-bottom:20px;
   margin-right:4%;
@@ -29,12 +29,24 @@ div#MenuErea{
   background-color: white;
 }
 
+/* table start */
 table#WebForm{
-  width:97%;
-  padding-left:3%;
-  padding-bottom:20px;
+  width:85%;
+  margin-left:3%;
   background-color: white;
+  border-collapse:collapse;
+  border-radius:1%;
 }
+table#WebForm td.tdHeader{
+  padding:3% 0 0 2%;
+}
+table#WebForm td.tdContent{
+  padding:0.5% 0 0 2%;
+}
+table#WebForm td.tdEnd{
+  padding:0 0 2% 0;
+}
+/* table end */
 
 /*File*/
 span.Mark{
@@ -83,10 +95,14 @@ table#SalesTable tr.header td{
   background: #B34444;
   color:white;
   padding:1px 2px 1px 3px;
+  text-align:center;
 }
 table#SalesTable tr.body td{
   border: solid 1px #A64040;
-  padding:1px 2px 1px 3px;
+  padding:3px 4px 3px 4px;
+}
+table#SalesTable input[type="text"] ,input[type="checkbox"]{
+  padding:2px 2px 2px 3px;
 }
 .GrafImg{
   width:50%;
@@ -96,9 +112,13 @@ table#SalesTable tr.body td{
 /*DB analyze end*/
 
 input[type="button"].SubmitDesign{
+  width:140px;
+  height:25px;
+  text-align:center;
   background-color: #ABA361;
-  padding:0.5px 2px 0.5px 2px;
+  padding:1px 2.5px 1px 2.5px;
   border:1px dotted #ABA572;
+  border-radius:5%;
   color:white;
 }
 input[type="button"].SubmitDesign:hover{
@@ -135,6 +155,9 @@ input[type="button"].SubmitDesign:hover{
 }
 .padding-left-20px{
   padding-left:20px;
+}
+.width-30%{
+  width:30%;
 }
 
 /*clear fix*/

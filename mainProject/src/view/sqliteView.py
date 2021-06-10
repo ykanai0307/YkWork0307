@@ -4,7 +4,7 @@ import os
 import urllib.request
 from ..module.dirPath import dirPathClass
 from ..module.DataBase import DataBaseClass
-from ..module.CreateTable import CreateTableSql
+from ..module.Query import Query             # sql
 from ..define.DBModeEnum import DBMode
 from django.shortcuts import render, redirect
 from django.views.generic import View
@@ -56,7 +56,8 @@ class sqliteView(View):
       
   # テーブル作成
   def create_table(request):
-      sv = sqliteView()
+      sv = sqliteView();
+      ct = Query();
       veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
       BindMes = '[%_MES_%]'
       mes = ""
@@ -65,7 +66,8 @@ class sqliteView(View):
               dbBase = DataBaseClass()
               dbBase.DbConnect(DBMode.SQLITE)
               dbBase.DbCursor()
-              sv._sql = CreateTableSql().CreateTableSales();
+              ct.SetTableName = "CopyTable"
+              sv._sql = ct.CreateTable();
               dbBase.DbExecute(sv._sql)
               sv._sql=""
               dbBase.DbCommit()

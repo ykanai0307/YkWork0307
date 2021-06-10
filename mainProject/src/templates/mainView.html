@@ -4,55 +4,79 @@
     <div id="WebFormErea">
     <form name="MainForm" id="MainForm">
         <table id="WebForm">
+            <!--<tr>-->
+            <!--  <td class="padding-top-20px"><label for="upload" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>ファイルアップロード</label></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--  <td class="padding-top-2px">-->
+            <!--      <div id="attachment">-->
+            <!--          <label><input type="file" name="FileAttach" id="FileAttach" accept=".docx" onchange="FileUpload()">ファイルを添付する</label>-->
+            <!--          <span id="FileAttachName" class="filename">選択されていません</span>-->
+            <!--      </div>-->
+            <!--  </td>-->
+            <!--</tr>-->
+            
             <tr>
-              <td class="padding-top-20px"><label for="upload" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>ファイルアップロード</label></td>
+              <td class="tdHeader"><label for="analyze" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>CreateTable</label></td>
+              <td class="tdHeader"><label for="analyze" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>DropTable</label></td>
             </tr>
             <tr>
-              <td class="padding-top-2px">
-                  <div id="attachment">
-                      <label><input type="file" name="FileAttach" id="FileAttach" accept=".docx" onchange="FileUpload()">ファイルを添付する</label>
-                      <span id="FileAttachName" class="filename">選択されていません</span>
-                  </div>
-              </td>
+              <td class="tdContent"><input type="button" name="upload_button" class="SubmitDesign" value="CREATE TABLE" onclick="SubmitTarget('db_create_table')" /></td>
+              <td class="tdContent"><input type="button" name="upload_button" class="SubmitDesign" value="DROP TABLE" onclick="SubmitTarget('db_drop_table')" /></td>
+            </tr>
+            
             <tr>
-              <td class="padding-top-7px"><input type="button" name="upload_button" class="SubmitDesign" value="ファイルアップロード(docx)" onclick="SubmitTarget('file_upload','multipart/form-data')" /></td>
+              <td class="tdHeader"><label for="analyze" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>DeleteTable</label></td>
+              <td class="tdHeader"><label for="analyze" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>InsertTable</label></td>
             </tr>
             <tr>
-              <td class="padding-top-20px"><label for="analyze" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>品詞解析</label></td>
+              <td class="tdContent"><input type="button" name="upload_button" class="SubmitDesign" value="DELETE TABLE" onclick="SubmitTarget('db_delete_table')" /></td>
+              <td class="tdContent"><input type="button" name="upload_button" class="SubmitDesign" value="INSERT TABLE" onclick="SubmitTarget('db_insert_table')" /></td>
+            </tr>
+            
+            <!--<tr>-->
+            <!--  <td class="padding-top-20px"><label for="analyze" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>品詞解析</label></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--  <td class="padding-top-2px"><input type="button" class="SubmitDesign" name="analyze" value="品詞解析実行" onclick="SubmitTarget('file_tokenizer')" /></td>-->
+            <!--</tr>-->
+            
+            <!--<tr>-->
+            <!--  <td class="padding-top-20px"><label for="download" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>結果のダウンロード</label></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--  <td class="padding-top-2px"><input type="button" class="SubmitDesign" name="download" value="結果のダウンロード(CSV)" onclick="SubmitTarget('file_download')" /></td>-->
+            <!--</tr>-->
+            
+            <tr>
+                <td class="tdHeader"><label for="download" name="FormTitle" class="FormTitle">実行結果</label></td>
             </tr>
             <tr>
-              <td class="padding-top-2px"><input type="button" class="SubmitDesign" name="analyze" value="品詞解析実行" onclick="SubmitTarget('file_tokenizer')" /></td>
+                <td class="tdContent" colspan="2">{{ message | safe }}</td>
             </tr>
-            <tr>
-              <td class="padding-top-20px"><label for="download" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>結果のダウンロード</label></td>
-            </tr>
-            <tr>
-              <td class="padding-top-2px"><input type="button" class="SubmitDesign" name="download" value="結果のダウンロード(CSV)" onclick="SubmitTarget('file_download')" /></td>
-            </tr>
-            <tr>
-              <td class="padding-top-20px"><label for="download" name="FormTitle" class="FormTitle">実行結果</label></td>
-            </tr>
-            <tr><td class="padding-top-2px" colspan="2">{{ message | safe }}</td></tr>
+            <tr><td class="tdEnd"></td></tr>
         </table>
+        
         <table id="WebForm" class="margin-top-30px">
             <tr>
-              <td class="padding-top-20px"><label for="upload" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>売上データ表示</label></td>
+              <td class="tdHeader"><label for="upload" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>History</label></td>
             </tr>
             <tr>
-              <td class="padding-top-2px">
+              <td class="tdContent">
                   <table id="SalesTable" border="0">
-                      <tr class="header"><td>商品名</td><td>販売店コード</td><td>商品コード</td><td>商品売上</td><td>売上日</td></tr>
+                      <tr class="header"><td></td><td>No</td><td>txtName</td><td>WordName</td><td>ExcelName</td><td>Active</td></tr>
                       {{ SalesResult | safe }}
                   </table>
               </td>
             </tr>
-            <tr>
-              <td class="padding-top-20px"><label for="download" name="FormTitle" class="FormTitle">実行結果</label></td>
-            </tr>
-            <tr>
-              <td rowspan="2" colspan="2">{{ PlotGrafImg | safe }}</td>
-            </tr>
-            <tr><td class="padding-top-2px" colspan="2">{{ message | safe }}</td></tr>
+            <tr><td class="tdEnd"></td></tr>
+            <!--<tr>-->
+            <!--  <td class="padding-top-20px"><label for="download" name="FormTitle" class="FormTitle">実行結果</label></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--  <td rowspan="1" colspan="1">{{ PlotGrafImg | safe }}</td>-->
+            <!--</tr>-->
+            <!--<tr><td class="padding-top-2px" colspan="2">{{ message | safe }}</td></tr>-->
         </table>
         {% csrf_token %}
     </form>

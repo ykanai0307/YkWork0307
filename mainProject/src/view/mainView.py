@@ -1,145 +1,282 @@
 import sys
-import glob
-import os
 import urllib.request
-#import matplotlib.pyplot as plt # 折れ線グラフ
-from ..module.tokenizerMain import tokenizerMainClass
-from ..module.dirPath import dirPathClass
-from ..module.DataBase import DataBaseClass
-from ..define.DBModeEnum import DBMode
-from django.shortcuts import render, redirect
-from pprint import pprint
-from os.path import abspath, join, split
-from django.views.generic import View
-from django.core.files.storage import FileSystemStorage
+import datetime                                         # datetime use
+from django.shortcuts import render                     # disp rendering
+from django.views.generic import View                   # to class
+from ..define.DBModeEnum import DBMode                  # db mode(sqllite mysql)
+from ..module.dirPath import dirPathClass               # path class
+from ..module.DataBase import DataBaseClass             # dbbase class
+from ..module.ViewGrid import ViewGridClass             # view class
+from ..module.Query import Query                        # all sql
+from ..module.SendValueShare import SendValueShareClass # [post get list] convert
 
 class mainView(View):
 
+  # 初期処理
   def __init__(self, **kwargs):
-      self._var = ''      
-      self.__veiwUrl = 'mainView.html'
-
+      self._viewIns = None;
+      self._sendValIns = None;
+      self._sql = '';
+      self._veiwUrl = 'mainView.html';
+  
+  # GET_METHOD
   def get(self, request, *args, **kwargs):
-      dirPathIns = dirPathClass()
+      dirPathIns = dirPathClass();
+      qr = Query();
       
       # DB接続
       try:
-          dbBase = DataBaseClass()
-          dbBase.DbConnect(DBMode.MYSQL)
-          dbBase.DbCursor()
+          dbBase = DataBaseClass();
+          self._viewIns = ViewGridClass();
+          dbBase.DbConnect(DBMode.SQLITE);
+          dbBase.DbCursor();
           
-          # レコードを登録
-          # persons = [(1, 'Steave'), (2, 'Eric'), (3, 'Mike')]
-          # cur.executemany("INSERT INTO members VALUES (?, ?)", persons)
+          # select
+          mainView.SelfSelect(dbBase,qr);
+          # view create
+          self._viewIns.SetData(dbBase.FetchAll());
+          self._viewIns.CreateGrid();
+          # db close
+          dbBase.DbCloseCursor();
+          dbBase.DbClose();
           
-          sql = "SELECT ProductName,SalesShopCode,ProductCode,SUM(ProductSalesPrice) ProductSalesPriceSum,YEAR(SalesDate) SalesDateY FROM SalesTable group by YEAR(SalesDate);"
-          dbBase.DbExecute(sql)
-          # カーソルを取得。
-          cursor = dbBase.GetDbCursor()
-          docs = cursor.fetchall()
-          yearlist = []
-          salesMoneylist = []
-          for doc in docs:
-              yearlist.append(int(doc[4]));
-              salesMoneylist.append(doc[3])
-              self._var += "<tr class='body'>" + "<td>" + doc[0] + "</td>" + "<td>" + doc[1] + "</td>" + "<td>" + doc[2] + "</td>" + "<td>" + str(doc[3]) + "</td>" + "<td>" + str(doc[4]) + "</td>" + "</tr>"
-          x = yearlist
-          y = salesMoneylist
-          
-          #plt.plot(x, y);
-          #plt.xlabel("売上日(年)",size="medium", color="blue",fontname="MS Gothic")
-          #plt.ylabel("商品売上",labelpad=1, weight="bold" ,size = "medium",rotation="horizontal",fontname="MS Gothic")
-          #plt.savefig(dirPathIns.GetSelfToStaticImgDir() + 'out.png')
-          #plt.close()
           context = {
             'message': "",
-            'SalesResult': self._var,
+            'SalesResult': self._viewIns.GetGrid(),
             'PlotGrafImg': '<img class="GrafImg" src="' + dirPathIns.GetUrlHost() + dirPathIns.GetSelfToStaticImgRelativeDirPath() + 'out.png' + '" alt="Graph" title="分析結果">',
           }
       except Exception as e:
           print('[DB Connection Error]', e)
           sys.exit(1) # プログラムをエラー終了
       
-      return render(request, self.__veiwUrl, context)
-    
+      return render(request, self._veiwUrl, context)
+  
+  # POST_METHOD
   def post(self, request, *args, **kwargs):
       context = {
           'message': 'test',
       }
-      return render(request, self.__veiwUrl, context)
+      return render(request, self._veiwUrl, context)
   
-  # ファイルアップロード
-  def file_upload(request):
-      mes = ""
-      errFlg = False
-      dirPathIns = dirPathClass()
+  # DB_CREATE_TABLE
+  def db_create_table(request):
+      Mv = mainView();
+      qr = Query();
+      Mv._viewIns = ViewGridClass();
       veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
       BindMes = '[%_MES_%]'
-      if request.method == 'POST':
-          if not 'FileAttach' in request.FILES:
-              errFlg = True
-              mes = 'ファイルを選択してください。'
-          if not (errFlg):
-              file_obj = request.FILES['FileAttach']
-              file_name = file_obj.name
-              if not (os.path.isfile(file_name)):
-                  fs = FileSystemStorage(location=dirPathIns.GetSelfToStaticUploadDirPath())
-                  filename = fs.save(file_name, file_obj)
-                  mes = filename + ' ： upload成功。'
-              else:
-                  mes = file_name + ' ： upload失敗。(既に存在します。)'
-      else:
-          mes = ""
-      context = {
-          'message': veiwMesTag.replace(BindMes,mes),
-      }
-      return render(request, 'mainView.html', context)
-      
-  # ファイル品詞分解
-  def file_tokenizer(request):
       mes = ""
-      dirPathIns = dirPathClass()
-      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
-      BindMes = '[%_MES_%]'
       if request.method == 'POST':
-          # メイン処理
-          os.chdir(dirPathIns.GetSelfToStaticUploadDirPath())
-          FileDocxList = glob.glob('*.docx')
-          tokenizerMainIns = tokenizerMainClass()
-          result = tokenizerMainIns.MainToManyFile(FileDocxList)
-          mes = "品詞解析成功。"
-      else:
-          mes = ""
-      
-      context = {
-          'message': veiwMesTag.replace(BindMes,mes),
-      }
-      return render(request, 'mainView.html', context)
-      
-  # ファイルダウンロード
-  def file_download(request):
-      mes = ""
-      dirPathIns = dirPathClass()
-      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
-      BindMes = '[%_MES_%]'
-      if request.method == 'POST':
-          # メイン処理
-          url = dirPathIns.GetUrlHost() + dirPathIns.GetSelfToStaticResultRelativeDirPath() + r"result.csv"
-          save_dir = dirPathIns.GetOutDir()
-          save_path = save_dir + "result.csv"
+          dbBase = DataBaseClass();
           try:
-              if (os.path.isdir(save_dir)):
-                      urllib.request.urlretrieve(url, save_path)
-                      mes = save_path + ":保存完了。"
-              else:
-                  os.mkdir(save_dir)
-                  urllib.request.urlretrieve(url, save_path)
-                  mes = save_path + ":保存完了。"
+              # open
+              dbBase.DbConnect(DBMode.SQLITE);
+              # create table make
+              mainView.SelfCreateTable(dbBase,qr,Mv);
+              # view create
+              Mv._viewIns.CreateGrid();
+              # submit
+              dbBase.DbCloseCursor();
+              dbBase.DbCommit();
+              mes = qr.GetTableName() + " create success";
           except Exception as e:
-              mes = e
+              dbBase.DbRollback();
+              mes = qr.GetTableName() + " create failed [" + str(e) + "]";
+          dbBase.DbClose();
+          pass
       else:
-          mes = ""
+          mes = "";
+      context = {
+          'SalesResult':  Mv._viewIns.GetGrid(),
+          'message': veiwMesTag.replace(BindMes,mes),
+      }
+      return render(request, Mv._veiwUrl, context);
+      
+  # DB_DROP_TABLE
+  def db_drop_table(request):
+      Mv = mainView();
+      qr = Query();
+      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
+      BindMes = '[%_MES_%]'
+      mes = ""
+      if request.method == 'POST':
+          dbBase = DataBaseClass();
+          try:
+              # open
+              dbBase.DbConnect(DBMode.SQLITE);
+              # drop make
+              mainView.SelfDropTable(dbBase,qr,Mv);
+              # submit
+              dbBase.DbCommit();
+              mes = qr.GetTableName() + " drop success";
+          except Exception as e:
+              dbBase.DbRollback();
+              mes = qr.GetTableName() + " drop failed [" + str(e) + "]";
+          dbBase.DbClose();
+          pass
+      else:
+          mes = "";
       context = {
           'message': veiwMesTag.replace(BindMes,mes),
       }
-      return render(request, 'mainView.html', context)
+      return render(request, Mv._veiwUrl, context);
+      
+  # DB_DELETE_TABLE
+  def db_delete_table(request):
+      Mv = mainView();
+      qr = Query();
+      Mv._viewIns = ViewGridClass();
+      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
+      BindMes = '[%_MES_%]'
+      mes = ""
+      if request.method == 'POST':
+          dbBase = DataBaseClass();
+          try:
+              # open
+              dbBase.DbConnect(DBMode.SQLITE);
+              # delete make
+              mainView.SelfDelete(dbBase,qr,Mv);
+              # view create
+              Mv._viewIns.CreateGrid();
+              # submit
+              dbBase.DbCommit();
+              dbBase.DbCloseCursor();
+              
+              mes = qr.GetTableName() + " delete success";
+          except Exception as e:
+              dbBase.DbRollback();
+              mes = qr.GetTableName() + " delete failed [" + str(e) + "]";
+          dbBase.DbClose();
+          pass
+      else:
+          mes = "";
+      context = {
+          'SalesResult':  Mv._viewIns.GetGrid(),
+          'message': veiwMesTag.replace(BindMes,mes),
+      }
+      return render(request, Mv._veiwUrl, context);
+      
+  # DB_INSERT_TABLE
+  def db_insert_table(request):
+      Mv = mainView();
+      qr = Query();
+      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
+      BindMes = '[%_MES_%]'
+      mes = ""
+      Mv._viewIns = ViewGridClass();
+      Mv._sendValIns = SendValueShareClass();
+      if request.method == 'POST':
+          
+          # post value convert
+          Mv._sendValIns.SetRequest(request);
+          Mv._sendValIns.SetCollum('check');
+          Mv._sendValIns.SetCollum('Txt');
+          Mv._sendValIns.SetCollum('Word');
+          Mv._sendValIns.SetCollum('Excel');
+          Mv._sendValIns.SetCollum('Active');
+          Mv._sendValIns.SendDataConversion();
+          
+          dbBase = DataBaseClass();
+          try:
+              # open
+              dbBase.DbConnect(DBMode.SQLITE);
+              # insert make
+              mainView.SelfInsert(dbBase,qr,Mv._sendValIns.GetResult());
+              # select
+              mainView.SelfSelect(dbBase,qr);
+              # view create
+              Mv._viewIns.SetData(dbBase.FetchAll());
+              Mv._viewIns.CreateGrid();
+              
+              # submit
+              dbBase.DbCommit();
+              dbBase.DbCloseCursor();
+              
+              mes = qr.GetTableName() + " insert success";
+          except Exception as e:
+              dbBase.DbRollback();
+              mes = qr.GetTableName() + " insert failed [" + str(e) + "]";
+          dbBase.DbClose();
+          pass
+      else:
+          mes = "";
+      context = {
+          'message': veiwMesTag.replace(BindMes,mes),
+          'SalesResult': Mv._viewIns.GetGrid(),
+      }
+      return render(request, Mv._veiwUrl, context);
+      
+  # (privateMethod)creat table
+  @classmethod
+  def SelfCreateTable(cls,dbBase,sqlClass,SelfClass):
+      try:
+          dbBase.DbCursor();
+          sqlClass.SetTableName("CopyTable");
+          sqlClass.SetCollum("No INTEGER PRIMARY KEY AUTOINCREMENT");
+          sqlClass.SetCollum("Txt TEXT DEFAULT NULL");
+          sqlClass.SetCollum("Word TEXT NOT NULL DEFAULT \" \"");
+          sqlClass.SetCollum("Excel TEXT NOT NULL DEFAULT \" \"");
+          sqlClass.SetCollum("CreateDate TIMESTAMP DEFAULT NULL");
+          sqlClass.SetCollum("Active INTEGER NOT NULL DEFAULT '0'");
+          cls._sql = sqlClass.CreateTable();
+          dbBase.DbExecute(cls._sql);
+          sqlClass.ClearCollum();
+      except Exception as e:
+          raise;
+          
+  # (privateMethod)drop table
+  @classmethod
+  def SelfDropTable(cls,dbBase,sqlClass,SelfClass):
+      try:
+          dbBase.DbCursor();
+          sqlClass.SetTableName("CopyTable");
+          cls._sql = sqlClass.DropTable();
+          dbBase.DbExecute(cls._sql);
+          dbBase.DbCloseCursor();
+      except Exception as e:
+          raise;
+          
+  # (privateMethod)select
+  @classmethod
+  def SelfSelect(cls,dbBase,sqlClass):
+      try:
+          sqlClass.SetTableName("CopyTable");
+          sqlClass.SetCollum("No");
+          sqlClass.SetCollum("Txt");
+          sqlClass.SetCollum("Word");
+          sqlClass.SetCollum("Excel");
+          sqlClass.SetCollum("CreateDate");
+          sqlClass.SetCollum("Active");
+          cls._sql = sqlClass.Select();
+          sqlClass.ClearCollum();
+          dbBase.DbExecute(cls._sql);
+      except Exception as e:
+          raise;
+     
+  # (privateMethod)insert
+  @classmethod
+  def SelfInsert(cls,dbBase,sqlClass,formData):
+      try:
+          dbBase.DbCursor();
+          sqlClass.SetTableName("CopyTable");
+          sqlClass.SetCollum("Txt");
+          sqlClass.SetCollum("Word");
+          sqlClass.SetCollum("Excel");
+          sqlClass.SetCollum("CreateDate");
+          sqlClass.SetCollum("Active");
+          cls._sql = sqlClass.Insert();
+          sqlClass.ClearCollum();
+          dbBase.DbExecuteMany(cls._sql,formData);
+      except Exception as e:
+          raise;
+          
+  # (privateMethod)delete
+  @classmethod
+  def SelfDelete(cls,dbBase,sqlClass,SelfClass):
+      try:
+          dbBase.DbCursor();
+          sqlClass.SetTableName("CopyTable");
+          cls._sql = sqlClass.Delete();
+          dbBase.DbExecute(cls._sql);
+      except Exception as e:
+          raise;
