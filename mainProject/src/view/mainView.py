@@ -67,6 +67,7 @@ class mainView(View):
   # DB_CREATE_TABLE
   def db_create_table(request):
       Mv = mainView();
+      redirectIns = RedirectClass();
       qr = Query();
       Mv._viewIns = ViewGridClass();
       mes = "";
@@ -97,6 +98,7 @@ class mainView(View):
   # DB_DROP_TABLE
   def db_drop_table(request):
       Mv = mainView();
+      redirectIns = RedirectClass();
       qr = Query();
       mes = "";
       if request.method == 'POST':
@@ -123,8 +125,8 @@ class mainView(View):
   # DB_DELETE_TABLE
   def db_delete_table(request):
       Mv = mainView();
-      qr = Query();
       redirectIns = RedirectClass();
+      qr = Query();
       Mv._viewIns = ViewGridClass();
       mes = "";
       if request.method == 'POST':
