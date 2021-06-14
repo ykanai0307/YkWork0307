@@ -7,6 +7,7 @@ from ..define.DBModeEnum import DBMode                  # db mode(sqllite mysql)
 from ..module.dirPath import dirPathClass               # path class
 from ..module.DataBase import DataBaseClass             # dbbase class
 from ..module.ViewGrid import ViewGridClass             # view class
+from ..module.Redirect import RedirectClass
 from ..module.Query import Query                        # all sql
 from ..module.SendValueShare import SendValueShareClass # [post get list] convert
 
@@ -23,9 +24,14 @@ class mainView(View):
   def get(self, request, *args, **kwargs):
       dirPathIns = dirPathClass();
       qr = Query();
+      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>';
+      BindMes = '[%_MES_%]'
+      mes = "";
       
       # DB接続
       try:
+          mes = request.GET.get("mes");
+          
           dbBase = DataBaseClass();
           self._viewIns = ViewGridClass();
           dbBase.DbConnect(DBMode.SQLITE);
@@ -41,7 +47,7 @@ class mainView(View):
           dbBase.DbClose();
           
           context = {
-            'message': "",
+            'message': veiwMesTag.replace(BindMes,mes),
             'SalesResult': self._viewIns.GetGrid(),
             'PlotGrafImg': '<img class="GrafImg" src="' + dirPathIns.GetUrlHost() + dirPathIns.GetSelfToStaticImgRelativeDirPath() + 'out.png' + '" alt="Graph" title="分析結果">',
           }
@@ -63,9 +69,7 @@ class mainView(View):
       Mv = mainView();
       qr = Query();
       Mv._viewIns = ViewGridClass();
-      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
-      BindMes = '[%_MES_%]'
-      mes = ""
+      mes = "";
       if request.method == 'POST':
           dbBase = DataBaseClass();
           try:
@@ -86,19 +90,15 @@ class mainView(View):
           pass
       else:
           mes = "";
-      context = {
-          'SalesResult':  Mv._viewIns.GetGrid(),
-          'message': veiwMesTag.replace(BindMes,mes),
-      }
-      return render(request, Mv._veiwUrl, context);
+      redirectIns.SetUrl('main');
+      redirectIns.SetParam('mes=' + mes);
+      return redirectIns.RedirectParam(); # redirect
       
   # DB_DROP_TABLE
   def db_drop_table(request):
       Mv = mainView();
       qr = Query();
-      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
-      BindMes = '[%_MES_%]'
-      mes = ""
+      mes = "";
       if request.method == 'POST':
           dbBase = DataBaseClass();
           try:
@@ -116,19 +116,17 @@ class mainView(View):
           pass
       else:
           mes = "";
-      context = {
-          'message': veiwMesTag.replace(BindMes,mes),
-      }
-      return render(request, Mv._veiwUrl, context);
+      redirectIns.SetUrl('main');
+      redirectIns.SetParam('mes=' + mes);
+      return redirectIns.RedirectParam(); # redirect
       
   # DB_DELETE_TABLE
   def db_delete_table(request):
       Mv = mainView();
       qr = Query();
+      redirectIns = RedirectClass();
       Mv._viewIns = ViewGridClass();
-      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
-      BindMes = '[%_MES_%]'
-      mes = ""
+      mes = "";
       if request.method == 'POST':
           dbBase = DataBaseClass();
           try:
@@ -136,8 +134,6 @@ class mainView(View):
               dbBase.DbConnect(DBMode.SQLITE);
               # delete make
               mainView.SelfDelete(dbBase,qr,Mv);
-              # view create
-              Mv._viewIns.CreateGrid();
               # submit
               dbBase.DbCommit();
               dbBase.DbCloseCursor();
@@ -150,19 +146,16 @@ class mainView(View):
           pass
       else:
           mes = "";
-      context = {
-          'SalesResult':  Mv._viewIns.GetGrid(),
-          'message': veiwMesTag.replace(BindMes,mes),
-      }
-      return render(request, Mv._veiwUrl, context);
+      redirectIns.SetUrl('main');
+      redirectIns.SetParam('mes=' + mes);
+      return redirectIns.RedirectParam(); # redirect
       
   # DB_INSERT_TABLE
   def db_insert_table(request):
       Mv = mainView();
+      redirectIns = RedirectClass();
       qr = Query();
-      veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>'
-      BindMes = '[%_MES_%]'
-      mes = ""
+      mes = "";
       Mv._viewIns = ViewGridClass();
       Mv._sendValIns = SendValueShareClass();
       if request.method == 'POST':
@@ -197,14 +190,11 @@ class mainView(View):
               dbBase.DbRollback();
               mes = qr.GetTableName() + " insert failed [" + str(e) + "]";
           dbBase.DbClose();
-          pass
       else:
           mes = "";
-      context = {
-          'message': veiwMesTag.replace(BindMes,mes),
-          'SalesResult': Mv._viewIns.GetGrid(),
-      }
-      return render(request, Mv._veiwUrl, context);
+      redirectIns.SetUrl('main');
+      redirectIns.SetParam('mes=' + mes);
+      return redirectIns.RedirectParam(); # redirect
       
   # (privateMethod)creat table
   @classmethod

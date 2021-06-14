@@ -17,12 +17,19 @@ class SendValueShareClass:
         col = 0;
         if self._request != None:
             if self._request.method == "POST":
-                for col in range(len(self._collum)):
-                    self._work.append( self._request.POST.getlist(str(self._collum[col])) );
-                self.ResultCreate(self._work);
-            else:
-                    self._work.append( self._request.GET.getlist(str(self._collum[col])) );
+                if len(self._collum) > 0:
+                    for col in range(len(self._collum)):
+                        self._work.append( self._request.POST.getlist(str(self._collum[col])) );
+                    self.ResultCreate(self._work);
+                else:
+                    pass; # 結果0件で返却。
+            else: # get
+                if len(self._collum) > 0:
+                    for col in range(len(self._collum)):
+                        self._work.append( self._request.GET.getlist(str(self._collum[col])) );
                     ResultCreate(self._work);
+                else:
+                    pass; # 結果0件で返却。
         elif self._dataArray != None:
             #for col in range(len(self._collum)):
                 #self._work[col] = self._request.POST.getlist(str(self._collum[col]));
