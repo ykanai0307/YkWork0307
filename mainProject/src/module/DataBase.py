@@ -1,21 +1,23 @@
 #import MySQLdb
-import sqlite3
-from ..define.DBModeEnum import DBMode
+import sqlite3;
+from os import path;
+from .dirPath import dirPathClass; # path class
+from ..define.DBModeEnum import DBMode;
 
 # DBコントローラ
 class DataBaseClass:
     
     # コンストラクタ
     def __init__(self):
-        self._conn = ""
-        self._cursor=""
-        self._host = '127.0.0.1'
-        self._port = 3306
-        self._user = 'root'
-        self._pwd = 'kanai'
-        self._db = 'ykdb'
-        self._charset = 'utf8'
-        pass
+        self._conn = "";
+        self._cursor= "";
+        self._host = '127.0.0.1';
+        self._port = 3306;
+        self._user = 'root';
+        self._pwd = 'kanai';
+        self._db = 'ykdb';
+        self._charset = 'utf8';
+        pass;
 
     # 接続
     def DbConnect(self,sqlMode):
@@ -30,10 +32,10 @@ class DataBaseClass:
         #    )
         #elif (sqlMode == DBMode.SQLITE):
         if (sqlMode == DBMode.SQLITE):
-            dbname = 'ykdb.db'
-            self._conn = sqlite3.connect(dbname)
+            #self._conn = sqlite3.connect('ykdb.db');
+            self._conn = sqlite3.connect(dirPathClass().GetSqlitePath() + '\\ykdb.db');
         else:
-            pass
+            pass;
     
     # db close
     def DbClose(self):

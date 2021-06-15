@@ -1,4 +1,5 @@
 from os.path import abspath, join, split
+import os;
 
 # パスコントローラ
 class dirPathClass:
@@ -8,6 +9,8 @@ class dirPathClass:
         self.UrlHost = r"http://localhost:8000/"
         
         self.OutDir = r"C:/Work/"
+        
+        self.SqlitePath = os.path.dirname(abspath(join(__file__,'../../../')));
         
         # 自身ディレクトリ指定
         self.self_dir = abspath(__file__)
@@ -21,6 +24,13 @@ class dirPathClass:
         self.selfToStaticResultRelativeDir = r"mainProject/static/result/"
         
         self.selfToStaticImgRelativeDir = r"mainProject/static/img/"
+
+    # Sqlite
+    def GetSqlitePath(self):
+        return self.SqlitePath;
+    #setter
+    def SetSqlitePath(self, value):
+        self.SqlitePath = value;
 
     # static/uploadを取得(プロパティ)
     def GetUrlHost(self):

@@ -30,7 +30,12 @@ class Query:
     def DropTable(self):
         self._sql = "drop table " + self._table + " ;";
         return self._sql;
-
+    
+    # selectSQL作成(テーブル存在確認)
+    def TableSelectCount(self):
+        self._sql = "SELECT COUNT(*) ct FROM sqlite_master WHERE TYPE='table' AND name='" + self._table + "'";
+        return self._sql;
+    
     # selectSQL作成
     def Select(self):
         self._sql = "select ";

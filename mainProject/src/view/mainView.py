@@ -27,15 +27,24 @@ class mainView(View):
       veiwMesTag = '<label for="mes" class="message">[%_MES_%]</label>';
       BindMes = '[%_MES_%]'
       mes = "";
+      redirectIns = RedirectClass();
       
       # DB接続
       try:
           mes = request.GET.get("mes");
+          if mes == None:
+              mes = "";
           
           dbBase = DataBaseClass();
           self._viewIns = ViewGridClass();
           dbBase.DbConnect(DBMode.SQLITE);
           dbBase.DbCursor();
+          
+          mainView.SelfSelectTableCount(dbBase,qr);
+          result = dbBase.FetchAll();
+          if(int(result[0][0]) < 1): # Table not Exist
+              # create table make
+              self.SelfCreateTable(dbBase,qr,self);
           
           # select
           mainView.SelfSelect(dbBase,qr);
@@ -206,8 +215,8 @@ class mainView(View):
           sqlClass.SetTableName("CopyTable");
           sqlClass.SetCollum("No INTEGER PRIMARY KEY AUTOINCREMENT");
           sqlClass.SetCollum("Txt TEXT DEFAULT NULL");
-          sqlClass.SetCollum("Word TEXT NOT NULL DEFAULT \" \"");
-          sqlClass.SetCollum("Excel TEXT NOT NULL DEFAULT \" \"");
+          sqlClass.SetCollum("Word TEXT NOT NULL DEFAULT \"\"");
+          sqlClass.SetCollum("Excel TEXT NOT NULL DEFAULT \"\"");
           sqlClass.SetCollum("CreateDate TIMESTAMP DEFAULT NULL");
           sqlClass.SetCollum("Active INTEGER NOT NULL DEFAULT '0'");
           cls._sql = sqlClass.CreateTable();
@@ -225,6 +234,16 @@ class mainView(View):
           cls._sql = sqlClass.DropTable();
           dbBase.DbExecute(cls._sql);
           dbBase.DbCloseCursor();
+      except Exception as e:
+          raise;
+
+  # (privateMethod)selectTableCount
+  @classmethod
+  def SelfSelectTableCount(cls,dbBase,sqlClass):
+      try:
+          sqlClass.SetTableName("CopyTable");
+          cls._sql = sqlClass.TableSelectCount();
+          dbBase.DbExecute(cls._sql);
       except Exception as e:
           raise;
           
