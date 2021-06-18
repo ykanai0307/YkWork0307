@@ -4,6 +4,7 @@
     <div id="WebFormErea">
     <form name="MainForm" id="MainForm">
         <table id="WebForm">
+            
             <!--<tr>-->
             <!--  <td class="padding-top-20px"><label for="upload" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>ファイルアップロード</label></td>-->
             <!--</tr>-->
@@ -49,7 +50,7 @@
             <!--</tr>-->
             
             <tr>
-                <td class="tdHeader"><label for="download" name="FormTitle" class="FormTitle">実行結果</label></td>
+                <td class="tdHeader"><label for="download" name="FormTitle" class="FormTitle">submit status</label></td>
             </tr>
             <tr>
                 <td class="tdContent" colspan="2">{{ message | safe }}</td>
@@ -59,7 +60,7 @@
         
         <table id="WebForm" class="margin-top-30px">
             <tr>
-              <td class="tdHeader"><label for="upload" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>History</label></td>
+              <td class="tdHeader"><label for="upload" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>Result(Only check is registered)</label></td>
             </tr>
             <tr>
               <td class="tdContent">
@@ -81,7 +82,7 @@
         {% csrf_token %}
     </form>
     </div>
-    <div id="MenuErea">
-        <p>test</p>
-    </div>
+    <!--<div id="MenuErea">-->
+        <!--<p>test</p>-->
+    <!--</div>-->
 {% endblock%}

@@ -7,7 +7,7 @@ from ..define.DBModeEnum import DBMode                  # db mode(sqllite mysql)
 from ..module.dirPath import dirPathClass               # path class
 from ..module.DataBase import DataBaseClass             # dbbase class
 from ..module.ViewGrid import ViewGridClass             # view class
-from ..module.Redirect import RedirectClass
+from ..module.Redirect import RedirectClass             # Redirect
 from ..module.Query import Query                        # all sql
 from ..module.SendValueShare import SendValueShareClass # [post get list] convert
 
@@ -18,7 +18,7 @@ class mainView(View):
       self._viewIns = None;
       self._sendValIns = None;
       self._sql = '';
-      self._veiwUrl = 'mainView.html';
+      self._veiw = 'mainView.html';
   
   # GET_METHOD
   def get(self, request, *args, **kwargs):
@@ -64,14 +64,14 @@ class mainView(View):
           print('[DB Connection Error]', e)
           sys.exit(1) # プログラムをエラー終了
       
-      return render(request, self._veiwUrl, context)
+      return render(request, self._veiw, context)
   
   # POST_METHOD
   def post(self, request, *args, **kwargs):
       context = {
           'message': 'test',
       }
-      return render(request, self._veiwUrl, context)
+      return render(request, self._veiw, context)
   
   # DB_CREATE_TABLE
   def db_create_table(request):

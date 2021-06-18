@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import url
 from .src.view.mainView import mainView
-from .src.view.sqliteView import sqliteView
+from .src.view.calendarView import calendarView
 
 urlpatterns = [
     url(r'^$', mainView.as_view(), name='main'),
@@ -9,6 +9,7 @@ urlpatterns = [
     path(r'db_delete_table', mainView.db_delete_table, name='yk_db_delete_table'),
     path(r'db_drop_table', mainView.db_drop_table, name='yk_db_drop_table'),
     path(r'db_insert_table', mainView.db_insert_table, name='yk_db_insert_table'),
-    path(r'sql_lite_view', sqliteView.as_view(), name='yk_sql_lite_view'),
-    path(r'sql_lite_create_table', sqliteView.create_table, name='yk_sql_lite_create_table'),
+    
+    path(r'calendar_view', calendarView.as_view(), name='calendar'),
+    path(r'calendar_create', calendarView.create, name='yk_calendar_create'),
 ]
