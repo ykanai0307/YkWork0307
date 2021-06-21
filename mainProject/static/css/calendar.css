@@ -104,7 +104,16 @@ label.Week_sat{
 label.Holiday{
   color:#C53935 !important;
 }
+#Calender td label.HolidayName{
+  font-size:5px;
+  color:#ECAB90;
+}
 td.Td_Day{
+  border-top:1px dotted #9E9D9E;
+  border-left:1px dotted #9E9D9E;
+}
+#Calender td.Td_Holiday{
+  padding:0px 0px 5px 3px;
   border-top:1px dotted #9E9D9E;
   border-left:1px dotted #9E9D9E;
 }
