@@ -12,4 +12,5 @@ urlpatterns = [
     
     path(r'calendar_view', calendarView.as_view(), name='calendar'),
     path(r'calendar_create', calendarView.create, name='yk_calendar_create'),
+    path(r'calendar_popup_click', calendarView.popup_click, name='yk_calendar_popup_click'),
 ]

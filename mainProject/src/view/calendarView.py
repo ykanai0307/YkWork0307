@@ -2,8 +2,10 @@ import sys;
 import glob;
 import os;
 import urllib.request;
-from ..module.Redirect import RedirectClass;      # Redirect
-from django.shortcuts import render;              # disp rendering
+import json,traceback;                                # json use
+from django.http.response import HttpResponse,Http404 # http response return(json)
+from ..module.Redirect import RedirectClass;          # Redirect
+from django.shortcuts import render;                  # disp rendering
 from django.views.generic import View;
 
 # Calendar create
@@ -32,8 +34,9 @@ class calendarView(View):
       context = {
           'message': 'test',
       };
-      return render(request, self._veiw, context);
-
+      # レスポンス返却
+      #response = json.dumps({'result':'test'});
+      #return HttpResponse(response);
 
   # calendar create
   @classmethod
@@ -52,6 +55,24 @@ class calendarView(View):
       cls._redirect.SetUrl('calendar');
       cls._redirect.SetParam('mes=' + cls._mes);
       return cls._redirect.RedirectParam(); # redirect
+      
+  # calendar popup click
+  @classmethod
+  def popup_click(cls,request):
+      cls._calender = calendarView();  # self
+      cls._mes = "";
+      if request.method == 'POST':
+          try:
+              cls._mes = "calendar create success";
+          except Exception as e:
+              cls._mes = "calendar create faild [" + str(e) + "]";
+          pass;
+      else: # GET
+          cls._mes = "calendar create faild (get)";
+          raise Http404;
+      # レスポンス返却
+      response = json.dumps({'result':cls._mes});
+      return HttpResponse(response);
 
   # property
   def GetCalender(self):

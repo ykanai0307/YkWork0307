@@ -26,10 +26,45 @@ $(function(){
           dateList.push(dateArray);
         };
         
-        alert(dateList[0]["date"]);
+        //alert(dateList[0]["date"]);
     } catch(e) {
         alert("calendar get faild [" + e.message + "]");
     }
+    
+    // day click
+    $('.DayList').click(function() {
+        var num = $('.DayList').index(this);
+        var lbl = $('.DayList').eq(num).children('label');
+        postData = {};
+        postData['part'] = lbl[0].textContent;
+        
+        var url = "/mainProject/calendar_popup_click";
+        
+        // csrf_token (post)
+        var csrf_token = getCookie("csrftoken");
+        
+        $.ajax({
+          'url':url,
+          'type':'POST',
+          'data':{
+            'postData': JSON.stringify(postData),
+          },
+          'dataType':'json',
+          'beforeSend':function(xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+          },
+          'success':function(response){
+              alert(response.result);
+          },
+          'error':function(XMLHttpRequest, textStatus, errorThrown){
+            alert("XMLHttpRequest : " + XMLHttpRequest.status + "/" + "errorThrown    : " + errorThrown.message );
+          },
+        });
+        return false;
+        
+    });
 });
 
 // holiday get
@@ -51,5 +86,28 @@ function getWeekly(){
 
 // 0padding(NUM=値,LEN=桁数)
 function zeroPadding(NUM, LEN){
-	return ( Array(LEN).join('0') + NUM ).slice( -LEN );
+    return ( Array(LEN).join('0') + NUM ).slice( -LEN );
+}
+
+// csrf_token get
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// csrf_token check
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
