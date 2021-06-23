@@ -32,40 +32,56 @@ $(function(){
     }
     
     // day click
-    $('.DayList').click(function() {
+    $('.DayList').click(function(e) {
         var num = $('.DayList').index(this);
         var lbl = $('.DayList').eq(num).children('label');
-        postData = {};
-        postData['part'] = lbl[0].textContent;
+        var pos = 0;
+        pos = num % 7;
+        var label = $('#Calender').find('label.Week')[pos];
+        // TODO 表示位置の調整を行う。
+        //$('#CalenderPopUp').offset({top: (e.clientY - 130), left: (e.clientX - 80)});
+        //alert(window.pageYOffset);
+        //alert(e.clientY);
+        $('#CalenderPopUp').offset({top: (window.pageYOffset + e.clientY) - 135, left: (window.pageXOffset + e.clientX) - 115});
         
-        var url = "/mainProject/calendar_popup_click";
+        $('#CalenderPopUp').find('label.day').text(zeroPadding( lbl[0].textContent ,2) + " " + label.innerText);
+        $('#CalenderPopUp').css('visibility','Visible');
+        
+        
+        //postData = {};
+        //postData['part'] = lbl[0].textContent;
         
         // csrf_token (post)
-        var csrf_token = getCookie("csrftoken");
-        
-        $.ajax({
-          'url':url,
-          'type':'POST',
-          'data':{
-            'postData': JSON.stringify(postData),
-          },
-          'dataType':'json',
-          'beforeSend':function(xhr, settings) {
-              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                  xhr.setRequestHeader("X-CSRFToken", csrf_token);
-              }
-          },
-          'success':function(response){
-              alert(response.result);
-          },
-          'error':function(XMLHttpRequest, textStatus, errorThrown){
-            alert("XMLHttpRequest : " + XMLHttpRequest.status + "/" + "errorThrown    : " + errorThrown.message );
-          },
-        });
-        return false;
+        //var csrf_token = getCookie("csrftoken");
+        //var url = "/mainProject/calendar_popup_click";
+        //post(url,postData,csrf_token);
         
     });
 });
+
+// post(ajax)
+function post(url,postData,csrf_token){
+    $.ajax({
+      'url':url,
+      'type':'POST',
+      'data':{
+        'postData': JSON.stringify(postData),
+      },
+      'dataType':'json',
+      'beforeSend':function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrf_token);
+          }
+      },
+      'success':function(response){
+          alert(response.result);
+      },
+      'error':function(XMLHttpRequest, textStatus, errorThrown){
+        alert("XMLHttpRequest : " + XMLHttpRequest.status + "/" + "errorThrown    : " + errorThrown.message );
+      },
+    });
+    return false;
+}
 
 // holiday get
 function getHoliday(fDate){
@@ -89,7 +105,7 @@ function zeroPadding(NUM, LEN){
     return ( Array(LEN).join('0') + NUM ).slice( -LEN );
 }
 
-// csrf_token get
+// csrf_token get(django)
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {

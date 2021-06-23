@@ -2,9 +2,9 @@ import sys;
 import glob;
 import os;
 import urllib.request;
-import json,traceback;                                # json use
-from django.http.response import HttpResponse,Http404 # http response return(json)
+from django.http.response import Http404              # http response 404
 from ..module.Redirect import RedirectClass;          # Redirect
+from ..module.Json import JsonClass;                  # Json
 from django.shortcuts import render;                  # disp rendering
 from django.views.generic import View;
 
@@ -14,6 +14,7 @@ class calendarView(View):
   def __init__(self, **kwargs):
       self._calender = "";
       self._redirect = "";
+      self._json = "";
       self._mes = "";
       self._veiw = 'calendarView.html';
   # get
@@ -60,6 +61,7 @@ class calendarView(View):
   @classmethod
   def popup_click(cls,request):
       cls._calender = calendarView();  # self
+      cls._json = JsonClass();
       cls._mes = "";
       if request.method == 'POST':
           try:
@@ -70,9 +72,10 @@ class calendarView(View):
       else: # GET
           cls._mes = "calendar create faild (get)";
           raise Http404;
-      # レスポンス返却
-      response = json.dumps({'result':cls._mes});
-      return HttpResponse(response);
+      # Response return
+      cls._json.SetParam(cls._mes);
+      cls._json.CreateResponse();
+      return cls._json.ReturnResponse();
 
   # property
   def GetCalender(self):
