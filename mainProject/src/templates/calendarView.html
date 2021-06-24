@@ -3,6 +3,16 @@
 {% block body %}
     <div id="WebFormErea">
     <form name="MainForm" id="MainForm">
+    
+        <ul>
+            <li>
+                <input type="button" name="Main" value="MAIN" onclick="SubmitTarget('./','','get')" />
+            </li>
+            <li>
+                <input type="button" name="Calender" value="CALENDAR" onclick="SubmitTarget('calendar_view','','get')" />
+            </li>
+        </ul>
+        
         <table id="WebForm" class="margin-top-30px">
             <tr>
               <td class="padding-top-20px"><label for="analyze" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>CALENDER CREATE</label></td>
@@ -26,7 +36,7 @@
               <td>
                 
                 <!-- CalenderPopUp start-->
-                <table id="CalenderPopUp">
+                <table id="CalenderPopUpHtml" style="visibility:collapse;">
                   <tr>
                     <td class="day"><label class="day">17 tue</label><input type="button" name="Close" value="×"/></td>
                   </tr>
@@ -47,11 +57,11 @@
                     <td class="RoundMark_right" rowspan="10"><label class="RoundMark">〇</label></td>
                   </tr>
                   <tr>
-                    <td class="MonthView" rowspan="2"><label class="MonthView">６</label></td>
+                    <td class="MonthView" rowspan="2"><label id="month" class="MonthView">６</label></td>
                     <td colspan="6"><label class="MonthEnglishView">June</label></td>
                   </tr>
                   <tr>
-                    <td><label class="YearView">2021</label></td>
+                    <td><label id="year" class="YearView">2021</label></td>
                   </tr>
                   <tr>
                     <td class="Td_Week"><label class="Week Week_sun">SUN</label></td>
@@ -122,6 +132,12 @@
                   </tr>
                 </table>
                 <!-- Calender end-->
+                
+                <div id="CalenderPopUpView"></div>
+                
+                {% for regist in registParam %}
+                    {{ regist | safe  }}
+                {% endfor %}
                 
               </td>
             </tr>

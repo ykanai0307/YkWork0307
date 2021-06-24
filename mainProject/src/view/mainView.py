@@ -3,9 +3,9 @@ import urllib.request
 import datetime                                         # datetime use
 from django.shortcuts import render                     # disp rendering
 from django.views.generic import View                   # to class
-from ..define.DBModeEnum import DBMode                  # db mode(sqllite mysql)
+from ..define.DBModeEnum import DBMode                  # DB mode(sqllite mysql)
 from ..module.dirPath import dirPathClass               # path class
-from ..module.DataBase import DataBaseClass             # dbbase class
+from ..module.DataBase import DataBaseClass             # DBbase class
 from ..module.ViewGrid import ViewGridClass             # view class
 from ..module.Redirect import RedirectClass             # Redirect
 from ..module.Query import Query                        # all sql

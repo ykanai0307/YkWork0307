@@ -1,5 +1,8 @@
-// calendar get(main)
+// calendar(main)
 $(function(){
+    // global var
+    var currentDate = '20210624';
+    
     try {
         // 月初
         //var startDate = new Date(new Date().setDate(1));
@@ -31,33 +34,79 @@ $(function(){
         alert("calendar get faild [" + e.message + "]");
     }
     
-    // day click
-    $('.DayList').click(function(e) {
-        var num = $('.DayList').index(this);
-        var lbl = $('.DayList').eq(num).children('label');
-        var pos = 0;
-        pos = num % 7;
-        var label = $('#Calender').find('label.Week')[pos];
-        // TODO 表示位置の調整を行う。
-        //$('#CalenderPopUp').offset({top: (e.clientY - 130), left: (e.clientX - 80)});
-        //alert(window.pageYOffset);
-        //alert(e.clientY);
-        $('#CalenderPopUp').offset({top: (window.pageYOffset + e.clientY) - 135, left: (window.pageXOffset + e.clientX) - 115});
-        
-        $('#CalenderPopUp').find('label.day').text(zeroPadding( lbl[0].textContent ,2) + " " + label.innerText);
-        $('#CalenderPopUp').css('visibility','Visible');
-        
-        
-        //postData = {};
-        //postData['part'] = lbl[0].textContent;
-        
-        // csrf_token (post)
-        //var csrf_token = getCookie("csrftoken");
-        //var url = "/mainProject/calendar_popup_click";
-        //post(url,postData,csrf_token);
-        
+    // day click event
+    $('#Calender').on('click','.DayList',function(e){
+        try {
+            var num = $('.DayList').index(this);
+            var lbl = $('.DayList').eq(num).children('label');
+            var pos = 0;
+            pos = num % 7;
+            var label = $('#Calender').find('label.Week')[pos];
+            
+            // select (year month date) set
+            currentDate = $('#year')[0].innerText + zeroPadding(hankakuZenkaku($('#month')[0].innerText),2) + zeroPadding(lbl[0].textContent,2);
+            
+            // CalenderPopUp create
+            let popUpHtml = CreatePopUp();
+            
+            // CalenderPopUp view set
+            $('#CalenderPopUpView').html(popUpHtml);
+            
+            // Label to date
+            $('#CalenderPopUp').find('label.day').text(zeroPadding( lbl[0].textContent ,2) + " " + label.innerText);
+            
+            // init(select) val set
+            // TODO:[data:memo] (仮)後で取得方法かえる。29日が二つあると両方に設定される。なおす。
+            for (let i=0; i < $('.param').length; i++) {
+                var param = $('.param')[i].innerText.split(':');
+                if(param[0] == currentDate){
+                    $("input[name=\"PopUpMemo\"]").val(param[1]);
+                }
+            }
+            
+            // CalenderPopUp view position adjust
+            $('#CalenderPopUp').offset({top: (window.pageYOffset + e.clientY) - 135, left: (window.pageXOffset + e.clientX) - 115});
+            
+            // CalenderPopUp view
+            $('#CalenderPopUp').css('visibility','Visible');
+        } catch(e) {
+            alert("ppopup create faild [" + e.message + "]");
+        }
+    });
+    
+    // PopUp regist click event
+    $('#CalenderPopUpView').on('click','#PopUpRegist',function(){
+        try {
+            postData = {};
+            postData['Date'] = currentDate;
+            postData['Memo'] = $("input[name=\"PopUpMemo\"]").val();
+            
+            // csrf_token (post)
+            var csrf_token = getCookie("csrftoken");
+            var url = "/mainProject/calendar_popup_click";
+            post(url,postData,csrf_token);
+        } catch(e) {
+            alert("popup regist faild [" + e.message + "]");
+        }
     });
 });
+
+// create popup
+function CreatePopUp(){
+    // CalenderPopUp create
+    let popUpHtml = " <table id=\"CalenderPopUp\">";
+    popUpHtml += "  <tr>";
+    popUpHtml += "    <td class=\"day\"><label class=\"day\">17 tue</label><input type=\"button\" name=\"Close\" value=\"×\"/></td>";
+    popUpHtml += "  </tr>";
+    popUpHtml += "  <tr>";
+    popUpHtml += "    <td class=\"memo\"><input type=\"text\" name=\"PopUpMemo\" placeholder=\"メモを入力\"/></td>";
+    popUpHtml += "  </tr>";
+    popUpHtml += "  <tr>";
+    popUpHtml += "    <td class=\"button\"><input type=\"button\" name=\"PopUpRegist\" id=\"PopUpRegist\" value=\"REGIST\"/></td>";
+    popUpHtml += "  </tr>";
+    popUpHtml += " </table>";
+    return popUpHtml;
+}
 
 // post(ajax)
 function post(url,postData,csrf_token){
@@ -65,7 +114,8 @@ function post(url,postData,csrf_token){
       'url':url,
       'type':'POST',
       'data':{
-        'postData': JSON.stringify(postData),
+        'postData': postData,
+        // 'postData': JSON.stringify(postData),
       },
       'dataType':'json',
       'beforeSend':function(xhr, settings) {
@@ -101,12 +151,20 @@ function getWeekly(){
 }
 
 // 0padding(NUM=値,LEN=桁数)
-function zeroPadding(NUM, LEN){
-    return ( Array(LEN).join('0') + NUM ).slice( -LEN );
+function zeroPadding(num,len){
+    return(Array(len).join("0")+num ).slice(-len);
+}
+
+// hankaku to zenkaku
+function hankakuZenkaku(text){
+    var hen = text.replace(/[Ａ-Ｚａ-ｚ０-９]/g,function(s){
+        return String.fromCharCode(s.charCodeAt(0)-0xFEE0);
+    });
+    return hen;
 }
 
 // csrf_token get(django)
-function getCookie(name) {
+function getCookie( name ) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
