@@ -2,6 +2,8 @@
 $(function(){
     // global var
     var currentDate = '20210624';
+    var currentDateTime = "";
+    var responseResult;
     
     try {
         // 月初
@@ -44,7 +46,16 @@ $(function(){
             var label = $('#Calender').find('label.Week')[pos];
             
             // select (year month date) set
-            currentDate = $('#year')[0].innerText + zeroPadding(hankakuZenkaku($('#month')[0].innerText),2) + zeroPadding(lbl[0].textContent,2);
+            currentDateTime = new Date(hankakuZenkaku($('#year')[0].innerText).toString(), zeroPadding(hankakuZenkaku($('#month')[0].innerText),2).toString(), zeroPadding(hankakuZenkaku(lbl[0].textContent),2).toString(), "01", "01", "01");
+            var monthCateg = lbl[0].classList[1].split('_');
+            if(monthCateg[0] == "LastMonth"){
+                currentDateTime.setMonth(currentDateTime.getMonth()-1);
+            }
+            currentDateTime = new Date(currentDateTime.setDate(zeroPadding(lbl[0].textContent,2).toString()));
+            currentDate = 'YYYY-MM-DD';
+            currentDate = currentDate.replace(/YYYY/g, currentDateTime.getFullYear());
+            currentDate = currentDate.replace(/MM/g, zeroPadding(currentDateTime.getMonth(),2));
+            currentDate = currentDate.replace(/DD/g, zeroPadding(currentDateTime.getDate(),2));
             
             // CalenderPopUp create
             let popUpHtml = CreatePopUp();
@@ -56,11 +67,18 @@ $(function(){
             $('#CalenderPopUp').find('label.day').text(zeroPadding( lbl[0].textContent ,2) + " " + label.innerText);
             
             // init(select) val set
-            // TODO:[data:memo] (仮)後で取得方法かえる。29日が二つあると両方に設定される。なおす。
-            for (let i=0; i < $('.param').length; i++) {
-                var param = $('.param')[i].innerText.split(':');
-                if(param[0] == currentDate){
-                    $("input[name=\"PopUpMemo\"]").val(param[1]);
+            postData = {};
+            postData['Mode'] = "Set";
+            postData['Date'] = currentDate;
+            var url = "/mainProject/calendar_popup_click";
+            responseResult = post(url,false,postData,"Set",getCookie("csrftoken"));
+            
+            // date compare
+            if( ( responseResult.length > 0 ) && ( responseResult[0].length > 0 ) && ( responseResult[0][0].length > 0 ) ){
+                let date1 = new Date(responseResult[0][0][0]);
+                let date2 = new Date(currentDate + " 01:01:01");
+                if(date1.getTime() == date2.getTime()){
+                    $("input[name=\"PopUpMemo\"]").val(responseResult[0][0][1]);
                 }
             }
             
@@ -78,13 +96,14 @@ $(function(){
     $('#CalenderPopUpView').on('click','#PopUpRegist',function(){
         try {
             postData = {};
+            postData['Mode'] = "Regist";
             postData['Date'] = currentDate;
             postData['Memo'] = $("input[name=\"PopUpMemo\"]").val();
             
             // csrf_token (post)
             var csrf_token = getCookie("csrftoken");
             var url = "/mainProject/calendar_popup_click";
-            post(url,postData,csrf_token);
+            post(url,true,postData,"Regist",csrf_token);
         } catch(e) {
             alert("popup regist faild [" + e.message + "]");
         }
@@ -109,28 +128,50 @@ function CreatePopUp(){
 }
 
 // post(ajax)
-function post(url,postData,csrf_token){
+function post(url,async,postData,status,csrf_token){
     $.ajax({
       'url':url,
+      'async': async,
       'type':'POST',
       'data':{
         'postData': postData,
         // 'postData': JSON.stringify(postData),
       },
       'dataType':'json',
-      'beforeSend':function(xhr, settings) {
+      'beforeSend':function(xhr, settings) { // for django csrf token(start)
           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
               xhr.setRequestHeader("X-CSRFToken", csrf_token);
           }
-      },
+      }, // for django csrf token(end)
       'success':function(response){
-          alert(response.result);
+          switch (status) {
+            case "Regist":
+              OnSuccess(response);
+              break;
+            case "Set":
+              OnSet(response);
+              break;
+            default:
+              OnSuccess(response);
+              break;
+          }
+      },
+      'complete':function(response){
       },
       'error':function(XMLHttpRequest, textStatus, errorThrown){
         alert("XMLHttpRequest : " + XMLHttpRequest.status + "/" + "errorThrown    : " + errorThrown.message );
       },
     });
-    return false;
+    return responseResult;
+}
+
+// response success(Regist)
+function OnSuccess(response){
+    responseResult = response.result;
+}
+// response success(Set)
+function OnSet(response){
+    responseResult = response.result;
 }
 
 // holiday get

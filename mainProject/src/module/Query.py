@@ -7,6 +7,7 @@ class Query:
         self._data = [];
         
         self._from = "";
+        self._whereList = [];
         self._where = "";
         self._group = "";
         self._table = "";
@@ -48,8 +49,10 @@ class Query:
             else:
                 self._sql += str(self._collum[i] + ",");
             i = i + 1;
-            
-        self._where = " where 1 = 1 ";
+        # where設定
+        self._whereList.insert(0," where 1 = 1 ");
+        for where in self._whereList:
+            self._where += str(where);
         self._from = " from "+ self._table;
         return self._sql + self._from + self._where;
         
@@ -77,11 +80,33 @@ class Query:
             else:
                 self._sql += "?,";
         return self._sql;
+        
+    # updateSQL作成
+    def Update(self):
+        self._sql = "update "+ self._table + " set ";
+        
+        # collum設定
+        i=0;
+        for col in self._collum:
+            if (len(self._collum) - 1) <= i:
+                self._sql += str(self._collum[i] + "");
+            else:
+                self._sql += str(self._collum[i] + ",");
+            i = i + 1;
+        # where設定
+        self._whereList.insert(0," where 1 = 1 ");
+        for where in self._whereList:
+            self._where += str(where);
+        return self._sql + self._where;
 
     # deleteSQL作成
     def Delete(self):
-        self._sql = "delete from " + self._table + " ;";
-        return self._sql;
+        self._sql = "delete from " + self._table + "";
+        # where設定
+        self._whereList.insert(0," where 1 = 1 ");
+        for where in self._whereList:
+            self._where += str(where);
+        return self._sql + self._where;
     
     # SQL取得(プロパティ)
     def GetSql(self):
@@ -92,6 +117,15 @@ class Query:
         self._collum.append(value); #setter
     def ClearCollum(self):
         self._collum = [];
+        
+    # Where属性
+    def SetWhereList(self, value):
+        self._whereList.append(value); #setter
+    def ClearWhereList(self):
+        self._whereList = [];
+        self.ClearWhere();
+    def ClearWhere(self):
+        self._where = "";
         
     # data
     def SetData(self, value):

@@ -101,7 +101,7 @@ table#SalesTable tr.body td{
   border: solid 1px #A64040;
   padding:3px 4px 3px 4px;
 }
-table#SalesTable input[type="text"] ,input[type="checkbox"]{
+table#SalesTable input[type="text"] ,table#SalesTable input[type="tel"] ,input[type="checkbox"]{
   padding:2px 2px 2px 3px;
 }
 .GrafImg{

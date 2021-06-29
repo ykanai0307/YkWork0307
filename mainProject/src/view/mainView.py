@@ -15,6 +15,7 @@ class mainView(View):
 
   # 初期処理
   def __init__(self, **kwargs):
+      self._table = "T_PLANS";
       self._viewIns = None;
       self._sendValIns = None;
       self._sql = '';
@@ -134,6 +135,7 @@ class mainView(View):
   # DB_DELETE_TABLE
   def db_delete_table(request):
       Mv = mainView();
+      Mv._sendValIns = SendValueShareClass();
       redirectIns = RedirectClass();
       qr = Query();
       Mv._viewIns = ViewGridClass();
@@ -141,10 +143,21 @@ class mainView(View):
       if request.method == 'POST':
           dbBase = DataBaseClass();
           try:
+              # post value convert
+              Mv._sendValIns.SetRequest(request);
+              Mv._sendValIns.SetCollum('check');
+              Mv._sendValIns.SetCollum('CalendarDate');
+              Mv._sendValIns.SetCollum('Txt');
+              Mv._sendValIns.SetCollum('Active');
+              Mv._sendValIns.SendDataConversion();
+          
               # open
               dbBase.DbConnect(DBMode.SQLITE);
-              # delete make
-              mainView.SelfDelete(dbBase,qr,Mv);
+              dbBase.DbCursor();
+              # check row do
+              for rowNum in range(len(Mv._sendValIns.GetResult())):
+                  # delete make
+                  mainView.SelfDelete(dbBase,qr,Mv,( ( ( Mv._sendValIns.GetResult()[rowNum][0], 0) ,) ));
               # submit
               dbBase.DbCommit();
               dbBase.DbCloseCursor();
@@ -174,9 +187,8 @@ class mainView(View):
           # post value convert
           Mv._sendValIns.SetRequest(request);
           Mv._sendValIns.SetCollum('check');
+          Mv._sendValIns.SetCollum('CalendarDate');
           Mv._sendValIns.SetCollum('Txt');
-          Mv._sendValIns.SetCollum('Word');
-          Mv._sendValIns.SetCollum('Excel');
           Mv._sendValIns.SetCollum('Active');
           Mv._sendValIns.SendDataConversion();
           
@@ -184,17 +196,26 @@ class mainView(View):
           try:
               # open
               dbBase.DbConnect(DBMode.SQLITE);
-              # insert make
-              mainView.SelfInsert(dbBase,qr,Mv._sendValIns.GetResult());
+              
+              # check row do
+              for rowNum in range(len(Mv._sendValIns.GetResult())):
+                  mainView.SelfSelect(dbBase,qr,( Mv._sendValIns.GetResult()[rowNum][0],0, ),"where");
+                  data = dbBase.FetchAll();
+                  if(len(data) > 0):
+                      # update
+                      mainView.SelfUpdate(dbBase,qr,( Mv._sendValIns.GetResult()[rowNum][1],Mv._sendValIns.GetResult()[rowNum][0],0, ));
+                  else:
+                      # insert
+                      mainView.SelfInsert(dbBase,qr,Mv._sendValIns.GetResult());
+              # submit
+              dbBase.DbCommit();
+              dbBase.DbCloseCursor();
+              
               # select
               mainView.SelfSelect(dbBase,qr);
               # view create
               Mv._viewIns.SetData(dbBase.FetchAll());
               Mv._viewIns.CreateGrid();
-              
-              # submit
-              dbBase.DbCommit();
-              dbBase.DbCloseCursor();
               
               mes = qr.GetTableName() + " insert success";
           except Exception as e:
@@ -212,13 +233,13 @@ class mainView(View):
   def SelfCreateTable(cls,dbBase,sqlClass,SelfClass):
       try:
           dbBase.DbCursor();
-          sqlClass.SetTableName("CopyTable");
-          sqlClass.SetCollum("No INTEGER PRIMARY KEY AUTOINCREMENT");
+          sqlClass.SetTableName("T_PLANS");
+          sqlClass.SetCollum("CalendarDateTime TIMESTAMP NOT NULL PRIMARY KEY");
           sqlClass.SetCollum("Txt TEXT DEFAULT NULL");
-          sqlClass.SetCollum("Word TEXT NOT NULL DEFAULT \"\"");
-          sqlClass.SetCollum("Excel TEXT NOT NULL DEFAULT \"\"");
-          sqlClass.SetCollum("CreateDate TIMESTAMP DEFAULT NULL");
-          sqlClass.SetCollum("Active INTEGER NOT NULL DEFAULT '0'");
+          sqlClass.SetCollum("Biko TEXT DEFAULT NULL");
+          sqlClass.SetCollum("Update_Dt TIMESTAMP DEFAULT NULL");
+          sqlClass.SetCollum("Create_Dt TIMESTAMP DEFAULT NULL");
+          sqlClass.SetCollum("Active INTEGER NOT NULL DEFAULT 0");
           cls._sql = sqlClass.CreateTable();
           dbBase.DbExecute(cls._sql);
           sqlClass.ClearCollum();
@@ -230,7 +251,7 @@ class mainView(View):
   def SelfDropTable(cls,dbBase,sqlClass,SelfClass):
       try:
           dbBase.DbCursor();
-          sqlClass.SetTableName("CopyTable");
+          sqlClass.SetTableName("T_PLANS");
           cls._sql = sqlClass.DropTable();
           dbBase.DbExecute(cls._sql);
           dbBase.DbCloseCursor();
@@ -241,7 +262,7 @@ class mainView(View):
   @classmethod
   def SelfSelectTableCount(cls,dbBase,sqlClass):
       try:
-          sqlClass.SetTableName("CopyTable");
+          sqlClass.SetTableName("T_PLANS");
           cls._sql = sqlClass.TableSelectCount();
           dbBase.DbExecute(cls._sql);
       except Exception as e:
@@ -249,45 +270,64 @@ class mainView(View):
           
   # (privateMethod)select
   @classmethod
-  def SelfSelect(cls,dbBase,sqlClass):
+  def SelfSelect(cls,dbBase,sqlClass,valueList=(),mode=""):
       try:
-          sqlClass.SetTableName("CopyTable");
-          sqlClass.SetCollum("No");
+          dbBase.DbCursor();
+          sqlClass.SetTableName("T_PLANS");
+          sqlClass.SetCollum("CalendarDateTime");
           sqlClass.SetCollum("Txt");
-          sqlClass.SetCollum("Word");
-          sqlClass.SetCollum("Excel");
-          sqlClass.SetCollum("CreateDate");
           sqlClass.SetCollum("Active");
+          if mode == "where":
+              sqlClass.SetWhereList(" AND CalendarDateTime = ? ");
+              sqlClass.SetWhereList(" AND Active = ? ");
           cls._sql = sqlClass.Select();
+          dbBase.DbBindExecute(cls._sql,valueList);
           sqlClass.ClearCollum();
-          dbBase.DbExecute(cls._sql);
+          sqlClass.ClearWhereList();
       except Exception as e:
           raise;
      
   # (privateMethod)insert
   @classmethod
-  def SelfInsert(cls,dbBase,sqlClass,formData):
+  def SelfInsert(cls,dbBase,sqlClass,valueList):
       try:
           dbBase.DbCursor();
-          sqlClass.SetTableName("CopyTable");
+          sqlClass.SetTableName("T_PLANS");
+          sqlClass.SetCollum("CalendarDateTime");
           sqlClass.SetCollum("Txt");
-          sqlClass.SetCollum("Word");
-          sqlClass.SetCollum("Excel");
-          sqlClass.SetCollum("CreateDate");
-          sqlClass.SetCollum("Active");
+          sqlClass.SetCollum("Update_Dt");
+          sqlClass.SetCollum("Create_Dt");
           cls._sql = sqlClass.Insert();
           sqlClass.ClearCollum();
-          dbBase.DbExecuteMany(cls._sql,formData);
+          dbBase.DbExecuteMany(cls._sql,valueList);
+      except Exception as e:
+          raise;
+          
+  # (privateMethod)update
+  @classmethod
+  def SelfUpdate(cls,dbBase,sqlClass,valueList):
+      try:
+          sqlClass.SetTableName("T_PLANS");
+          sqlClass.SetCollum("Txt = ?");
+          sqlClass.SetWhereList(" AND CalendarDateTime = ? ");
+          sqlClass.SetWhereList(" AND Active = ? ");
+          cls._sql = sqlClass.Update();
+          dbBase.DbBindExecute(cls._sql,valueList);
+          sqlClass.ClearCollum();
+          sqlClass.ClearWhereList();
       except Exception as e:
           raise;
           
   # (privateMethod)delete
   @classmethod
-  def SelfDelete(cls,dbBase,sqlClass,SelfClass):
+  def SelfDelete(cls,dbBase,sqlClass,SelfClass,valueList):
       try:
-          dbBase.DbCursor();
-          sqlClass.SetTableName("CopyTable");
+          sqlClass.SetTableName("T_PLANS");
+          sqlClass.SetWhereList(" AND CalendarDateTime = ? ");
+          sqlClass.SetWhereList(" AND Active = ? ");
           cls._sql = sqlClass.Delete();
-          dbBase.DbExecute(cls._sql);
+          dbBase.DbExecuteMany(cls._sql,valueList);
+          sqlClass.ClearCollum();
+          sqlClass.ClearWhereList();
       except Exception as e:
           raise;

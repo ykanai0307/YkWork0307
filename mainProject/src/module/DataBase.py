@@ -57,11 +57,16 @@ class DataBaseClass:
         if(self._cursor != None):
             self._cursor.execute(sql);
             sql="";
+
+    # execute bind
+    def DbBindExecute(self,sql,data):
+        if(self._cursor != None):
+            self._cursor.execute(sql,data);
+            sql="";
             
     # execute
     def DbExecuteMany(self,sql,data):
         if(self._cursor != None):
-            print(data);
             self._cursor.executemany(sql,data);
             sql="";
 

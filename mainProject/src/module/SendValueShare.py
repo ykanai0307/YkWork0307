@@ -1,4 +1,4 @@
-
+from .DateTimeControl import DateTimeControlClass;            # datetime edit
 
 # 受け取った値を設定し直すコントローラ
 class SendValueShareClass:
@@ -38,7 +38,13 @@ class SendValueShareClass:
     # 結果生成
     def ResultCreate(self,work):
         for rowNum in range(len(work[0])):
-            self._result.append(( str(work[1][int(work[0][rowNum])]),str(work[2][int(work[0][rowNum])]),str(work[3][int(work[0][rowNum])]),"2021-06-01 01:01:01",int(work[4][int(work[0][rowNum])]) ));
+            # datetime convert
+            dcc = DateTimeControlClass();
+            dcc.SetDateTimeStr( str(work[1][int(work[0][rowNum])]) );
+            dcc.DateTimeConvert(r'%Y-%m-%d %H:%M:%S',"hhMMss");
+            # now
+            dcc.NowDateTimeConvert();
+            self._result.append( ( dcc.GetDateTimeHmsStr(),str(work[2][int(work[0][rowNum])]),dcc.GetDateTimeHmsNowStr(),dcc.GetDateTimeHmsNowStr(), ) );
 
     # collum set
     def SetCollum(self, value):
