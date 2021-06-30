@@ -1,0 +1,93 @@
+.menu-btn {
+    position: fixed;
+    top: 40px;
+    left: 0px;
+    display: flex;
+    height: 40px;
+    width: 40px;
+    justify-content: center;
+    align-items: center;
+    z-index: 90;
+    background-color: #732C2C;
+}
+.menu-btn span,
+.menu-btn span:before,
+.menu-btn span:after {
+    content: '';
+    display: block;
+    height: 3px;
+    width: 25px;
+    border-radius: 3px;
+    background-color: #ffffff;
+    position: absolute;
+}
+.menu-btn span:before {
+    bottom: 8px;
+}
+.menu-btn span:after {
+    top: 8px;
+}
+
+#menu-btn-check:checked ~ .menu-btn span {
+    background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/
+}
+#menu-btn-check:checked ~ .menu-btn span::before {
+    bottom: 0;
+    transform: rotate(45deg);
+}
+#menu-btn-check:checked ~ .menu-btn span::after {
+    top: 0;
+    transform: rotate(-45deg);
+}
+#Menu {
+  visibility: hidden;
+}
+#menu-btn-check {
+  display: none;
+}
+
+/* menu button */
+ul#Menu{
+  position: fixed;
+  top: 40px;
+  left: 0px;
+  width:6.5%;
+  padding:45px 0.5% 0.5% 1%;
+  background-color: #732C2C;
+}
+ul#Menu li{
+  list-style: none;
+}
+ul#Menu li.ButtonOverPos{
+  padding-bottom:15px;
+}
+ul#Menu li input{
+  padding:2px;
+  border-color:#EFF7CF;
+  background: #732C2C;
+  color:#FFFFF5;
+  border:1px solid;
+  border-radius:1px;
+  display: block;
+}
+ul#Menu li input:hover{
+  opacity:0.8;
+}
+
+/* image */
+.Img{
+  border: 5px solid #ffffff;
+  width:400px;
+  height:auto;
+  display:block;
+}
+#ImgTag li{
+  float:left;
+  list-style: none;
+}
+#ImgTag li a{
+  display:block;
+}
+a.ileft,a.icenter{
+  margin-right:20px;
+}

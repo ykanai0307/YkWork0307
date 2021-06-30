@@ -5,6 +5,9 @@ $(function(){
     var currentDateTime = "";
     var responseResult;
     
+    var initCarendarPopUpTop = 0;
+    var scroll = 0;
+    
     try {
         // 月初
         //var startDate = new Date(new Date().setDate(1));
@@ -46,12 +49,14 @@ $(function(){
             var label = $('#Calender').find('label.Week')[pos];
             
             // select (year month date) set
-            currentDateTime = new Date(hankakuZenkaku($('#year')[0].innerText).toString(), zeroPadding(hankakuZenkaku($('#month')[0].innerText),2).toString(), zeroPadding(hankakuZenkaku(lbl[0].textContent),2).toString(), "01", "01", "01");
+            var lblTmp = lbl[0].innerText.split('\n');
+            currentDateTime = new Date(hankakuZenkaku($('#year')[0].innerText).toString(), zeroPadding(hankakuZenkaku($('#month')[0].innerText),2).toString(), zeroPadding(hankakuZenkaku(lblTmp[0]),2).toString(), "01", "01", "01");
+            alert(currentDateTime);
             var monthCateg = lbl[0].classList[1].split('_');
             if(monthCateg[0] == "LastMonth"){
                 currentDateTime.setMonth(currentDateTime.getMonth()-1);
             }
-            currentDateTime = new Date(currentDateTime.setDate(zeroPadding(lbl[0].textContent,2).toString()));
+            currentDateTime = new Date(currentDateTime.setDate(zeroPadding(lblTmp[0],2).toString()));
             currentDate = 'YYYY-MM-DD';
             currentDate = currentDate.replace(/YYYY/g, currentDateTime.getFullYear());
             currentDate = currentDate.replace(/MM/g, zeroPadding(currentDateTime.getMonth(),2));
@@ -64,7 +69,11 @@ $(function(){
             $('#CalenderPopUpView').html(popUpHtml);
             
             // Label to date
-            $('#CalenderPopUp').find('label.day').text(zeroPadding( lbl[0].textContent ,2) + " " + label.innerText);
+            var holidayLabel = "";
+            if(lblTmp.length > 1){
+                holidayLabel = '\n' + lblTmp[1];
+            }
+            $('#CalenderPopUp').find('label.day').text(zeroPadding( lblTmp[0] ,2) + " " + label.innerText + " " + holidayLabel);
             
             // init(select) val set
             postData = {};
@@ -83,7 +92,8 @@ $(function(){
             }
             
             // CalenderPopUp view position adjust
-            $('#CalenderPopUp').offset({top: (window.pageYOffset + e.clientY) - 135, left: (window.pageXOffset + e.clientX) - 115});
+            initCarendarPopUpTop = (window.pageYOffset + e.clientY) - 135;
+            $('#CalenderPopUp').offset({top: initCarendarPopUpTop, left: (window.pageXOffset + e.clientX) - 115});
             
             // CalenderPopUp view
             $('#CalenderPopUp').css('visibility','Visible');
@@ -107,6 +117,16 @@ $(function(){
         } catch(e) {
             alert("popup regist faild [" + e.message + "]");
         }
+    });
+    
+    // popup position fix
+    $(window).scroll(function(e) {
+      try {
+          scroll = $(this).scrollTop();
+          $('#CalenderPopUp').offset({top: initCarendarPopUpTop});
+      } catch(e) {
+          alert("scroll pos get faild [" + e.message + "]");
+      }
     });
 });
 

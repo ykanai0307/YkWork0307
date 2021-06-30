@@ -16,3 +16,20 @@ function FileUpload(){
     var file = $("#FileAttach").prop('files')[0];
     $("#FileAttachName").text(file.name);
 }
+
+//ready
+$(function(){
+    // menu click
+    $('#hamburger-menu').on('click','#menu-btn-check',function(){
+        try {
+          var visibility = $('#Menu').css('visibility');
+          if(visibility == 'visible'){
+              $('#Menu').css('visibility','hidden');
+          }else{
+              $('#Menu').css('visibility','visible');
+          }
+        } catch(e) {
+            alert("popup regist faild [" + e.message + "]");
+        }
+    });
+});

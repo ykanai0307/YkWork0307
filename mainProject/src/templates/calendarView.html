@@ -2,18 +2,8 @@
 
 {% block body %}
     <div id="WebFormErea">
-    <form name="MainForm" id="MainForm">
-    
-        <ul>
-            <li>
-                <input type="button" name="Main" value="MAIN" onclick="SubmitTarget('./','','get')" />
-            </li>
-            <li>
-                <input type="button" name="Calender" value="CALENDAR" onclick="SubmitTarget('calendar_view','','get')" />
-            </li>
-        </ul>
         
-        <table id="WebForm" class="margin-top-30px">
+        <table id="WebForm">
             <tr>
               <td class="padding-top-20px"><label for="analyze" name="FormTitle" class="FormTitle"><span class="Mark">&#9827;&nbsp;</span>CALENDER CREATE</label></td>
             </tr>
@@ -150,7 +140,6 @@
             <!--</tr>-->
         </table>
         {% csrf_token %}
-    </form>
     </div>
     <!--<div id="MenuErea">-->
     <!--    <p>test</p>-->

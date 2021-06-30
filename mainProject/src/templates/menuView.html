@@ -1,0 +1,19 @@
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block body %}
+    <div id="WebFormErea">
+        <ul id="ImgTag" class="clearfix">
+          <li>
+            <a href="https://aspykproject.apphb.com/Form/LoginForm/Login" class="ileft"><img class="Img" src="{% static 'img/PORTFALIO/TxtStrageSite.png' %}" alt="FileStrage"></a>
+          </li>
+          <li>
+            <a href="https://thawing-citadel-82373.herokuapp.com/memo/" class="icenter"><img class="Img" src="{% static 'img/PORTFALIO/MemoSite.png' %}" alt="Memo"></a>
+          </li>
+          <li>
+            <a href="https://thawing-citadel-82373.herokuapp.com/memo/memoAdLogin/"><img class="Img" src="{% static 'img/PORTFALIO/MemoAdminSite.png' %}" alt="MemoAdmin"></a>
+          </li>
+        </ul>
+        {% csrf_token %}
+    </div>
+{% endblock%}

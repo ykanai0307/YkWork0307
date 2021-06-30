@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="icon" type="image/png" href="{% static 'img/out.png' %}">
+  <link href="{% static 'css/menu.css' %}" rel="stylesheet">
   <link href="{% static 'css/common.css' %}" rel="stylesheet">
   <link href="{% static 'css/calendar.css' %}" rel="stylesheet">
   <script type="text/javascript" src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
@@ -13,11 +15,29 @@
   <title>VariousTools</title>
 </head>
 <body>
+  <form name="MainForm" id="MainForm"><!-- FORM START -->
   <div id="header">
+      <h1>Portfalio</h1>
   </div><!-- header -->
   <div id="container" class="clearfix">
+      <div id="hamburger-menu" class="hamburger-menu">
+          <input type="checkbox" id="menu-btn-check">
+          <label for="menu-btn-check" class="menu-btn"><span></span></label>
+      </div>
+      <ul id="Menu">
+          <li class="ButtonOverPos">
+              <input type="button" name="Menu" value="MENU" onclick="SubmitTarget('./','','get')" />
+          </li>
+          <li class="ButtonOverPos">
+              <input type="button" name="Main" value="MAIN" onclick="SubmitTarget('main','','get')" />
+          </li>
+          <li>
+              <input type="button" name="Calender" value="CALENDAR" onclick="SubmitTarget('calendar_view','','get')" />
+          </li>
+      </ul>
 {% block body %}
 {% endblock %}
   </div><!-- container -->
+  </form><!-- FORM END -->
 </body>
 </html>
