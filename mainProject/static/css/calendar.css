@@ -36,17 +36,87 @@ td.MonthView{
   text-align:center;
 }
 label.MonthView{
+  position:relative;
+  top:15;
   color:#E60110;
   font-weight:bold;
-  font-size:40px !important;
+  font-size:70px !important;
 }
 label.MonthEnglishView{
+  position:relative;
+  top:35;
   color:#221E1D;
   font-weight:bold;
 }
 label.YearView{
+  position:relative;
+  top:5;
   color:#221E1D;
   font-weight:bold;
+}
+
+/* LastMonth */
+#LastMonth{
+  width:80px;
+  margin:0 3px 5px 3px;
+  font-size:1px !important;
+  border-collapse:collapse;
+  border:none;
+}
+#LastMonth td{
+  text-align:center;
+  margin:0;
+  padding:0;
+}
+#LastMonth Label.Day{
+  font-weight:normal;
+}
+#LastMonth Label{
+  display:inline;
+}
+#LastMonth label.month{
+  font-size:20px !important;
+  position:relative;
+  top:-42;
+  color:#E60110;
+  vertical-align:top;
+  font-weight:bold;
+  margin-right:2px;
+}
+#LastMonth label.Week_sun,#LastMonth label.Week_mon,#LastMonth label.Week_tue,#LastMonth label.Week_wed,#LastMonth label.Week_thu,#LastMonth label.Week_fri,#LastMonth label.Week_sat{
+  display:block;
+}
+
+/* NextMonth */
+#NextMonth{
+  width:80px;
+  margin:0 3px 5px 3px;
+  font-size:1px !important;
+  border-collapse:collapse;
+  border:none;
+}
+#NextMonth td{
+  text-align:center;
+  margin:0;
+  padding:0;
+}
+#NextMonth Label.Day{
+  font-weight:normal;
+}
+#NextMonth Label{
+  display:inline;
+}
+#NextMonth label.month{
+  font-size:20px !important;
+  position:relative;
+  top:-42;
+  color:#E60110;
+  vertical-align:top;
+  font-weight:bold;
+  margin-right:2px;
+}
+#NextMonth label.Week_sun,#NextMonth label.Week_mon,#NextMonth label.Week_tue,#NextMonth label.Week_wed,#NextMonth label.Week_thu,#NextMonth label.Week_fri,#NextMonth label.Week_sat{
+  display:block;
 }
 
 /* Week */
@@ -144,6 +214,13 @@ label.ThisMonth_mon,label.ThisMonth_tue,label.ThisMonth_wed,label.ThisMonth_thu,
   color;#534C4C;
   font-weight:bold;
   display:block;
+}
+#Calender label span.Circle{
+  position: relative;
+  top:-5px;
+  left:25px;
+  color:#D1DFFF;
+  font-size:5px;
 }
 
 /* popup */

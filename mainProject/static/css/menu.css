@@ -51,9 +51,10 @@ ul#Menu{
   position: fixed;
   top: 40px;
   left: 0px;
-  width:6.5%;
-  padding:45px 0.5% 0.5% 1%;
+  width:8.5%;
+  padding:50px 0.5% 0.5% 1%;
   background-color: #732C2C;
+  z-index:1;
 }
 ul#Menu li{
   list-style: none;
@@ -69,6 +70,8 @@ ul#Menu li input{
   border:1px solid;
   border-radius:1px;
   display: block;
+  letter-spacing:1px;
+  z-index:90;
 }
 ul#Menu li input:hover{
   opacity:0.8;
@@ -83,6 +86,7 @@ ul#Menu li input:hover{
 }
 #ImgTag li{
   float:left;
+  margin-bottom:20px;
   list-style: none;
 }
 #ImgTag li a{
@@ -90,4 +94,28 @@ ul#Menu li input:hover{
 }
 a.ileft,a.icenter{
   margin-right:20px;
+}
+
+@media screen and (min-width:480px) and ( max-width:1024px) {
+  .Img{
+    width:200px;
+    height:auto;
+  }
+  #ImgTag li{
+    list-style: none;
+  }
+  .menu-btn{
+    height: 22px;
+    width: 22px;
+  }
+  ul#Menu{
+    width:15%;
+    padding:30px 0.5% 1% 0;
+  }
+  ul#Menu li.ButtonOverPos{
+    padding-bottom:10px;
+  }
+  ul#Menu li input{
+    font-size:8px;
+  }
 }

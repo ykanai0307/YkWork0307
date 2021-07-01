@@ -9,34 +9,13 @@ $(function(){
     var scroll = 0;
     
     try {
-        // 月初
-        //var startDate = new Date(new Date().setDate(1));
-        var startDate = new Date();
-        startDate.setMonth(startDate.getMonth() + 1);
-        startDate = new Date(startDate.setDate(1));
-        
-        // 月末
-        var monthEnd = new Date();
-        //monthEnd.setMonth(monthEnd.getMonth() + 1);
-        monthEnd.setMonth(monthEnd.getMonth() + 2);
-        endDate = new Date(monthEnd.setDate(0));
-        
-        var dateList = new Array();
-        
-        // 月単位の曜日
-        for(var d = startDate; d <= endDate; d.setDate(d.getDate()+1)) {
-          var dateData = d.getFullYear() + '-' + zeroPadding( (d.getMonth()+1) ,2) + '-' + zeroPadding( d.getDate() ,2);
-          var dateArray = {
-           date: dateData, 
-           week: getWeekly()[d.getDay()],
-           holiday: getHoliday(dateData)
-          };
-          dateList.push(dateArray);
-        };
+        var startDate = MonthStartGet(0,1);    // MonthStartate
+        var endDate = MonthEndGet(1,0);        // MonthEndDate
+        dateList = DayList(startDate,endDate); // Day list create
         
         //alert(dateList[0]["date"]);
     } catch(e) {
-        alert("calendar get faild [" + e.message + "]");
+        alert("this month get faild [" + e.message + "]");
     }
     
     // day click event
@@ -51,7 +30,6 @@ $(function(){
             // select (year month date) set
             var lblTmp = lbl[0].innerText.split('\n');
             currentDateTime = new Date(hankakuZenkaku($('#year')[0].innerText).toString(), zeroPadding(hankakuZenkaku($('#month')[0].innerText),2).toString(), zeroPadding(hankakuZenkaku(lblTmp[0]),2).toString(), "01", "01", "01");
-            alert(currentDateTime);
             var monthCateg = lbl[0].classList[1].split('_');
             if(monthCateg[0] == "LastMonth"){
                 currentDateTime.setMonth(currentDateTime.getMonth()-1);
@@ -61,6 +39,10 @@ $(function(){
             currentDate = currentDate.replace(/YYYY/g, currentDateTime.getFullYear());
             currentDate = currentDate.replace(/MM/g, zeroPadding(currentDateTime.getMonth(),2));
             currentDate = currentDate.replace(/DD/g, zeroPadding(currentDateTime.getDate(),2));
+            
+            if(lblTmp.length > 0 && lblTmp[0] == ""){
+                return true;
+            }
             
             // CalenderPopUp create
             let popUpHtml = CreatePopUp();
@@ -128,7 +110,63 @@ $(function(){
           alert("scroll pos get faild [" + e.message + "]");
       }
     });
+    
+    $('#Calender').on('click','#LastMonth',function(e){
+      var dateList = new Array();
+      try {
+        var startDate = MonthStartGet(-1,1);   // MonthStartate
+        var endDate = MonthEndGet(0,0);        // MonthEndDate
+        dateList = DayList(startDate,endDate); // Day list create
+      } catch(e) {
+          alert("LastMonth click faild [" + e.message + "]");
+      }
+    });
 });
+
+// MonthStartDate
+function MonthStartGet(duration,addDate){
+    var startDate = false;
+    try {
+        var dateVal = new Date();
+        dateVal.setMonth(dateVal.getMonth() + duration);
+        startDate = new Date(dateVal.setDate(addDate));
+    } catch(e) {
+        alert("MonthStartGet get faild [" + e.message + "]");
+    }
+    return startDate;
+}
+
+// MonthEndDate
+function MonthEndGet(duration,addDate){
+    var endDate = false;
+    try {
+        var dateVal = new Date();
+        dateVal.setMonth(dateVal.getMonth() + duration);
+        endDate = new Date(dateVal.setDate(addDate));
+    } catch(e) {
+        alert("MonthEndGet get faild [" + e.message + "]");
+    }
+    return endDate;
+}
+
+// Day list create
+function DayList(startDate,endDate){
+    var dateList = new Array();
+    try {
+        for(var d = startDate; d <= endDate; d.setDate(d.getDate()+1)) {
+            var dateData = d.getFullYear() + '-' + zeroPadding( (d.getMonth()+1) ,2) + '-' + zeroPadding( d.getDate() ,2);
+            var dateArray = {
+               date: dateData, 
+               week: getWeekly()[d.getDay()],
+               holiday: getHoliday(dateData)
+            };
+            dateList.push(dateArray);
+        };
+    } catch(e) {
+        alert("DayList create faild [" + e.message + "]");
+    }
+    return dateList;
+}
 
 // create popup
 function CreatePopUp(){
