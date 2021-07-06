@@ -39,8 +39,10 @@
                 </table>
                 <!-- CalenderPopUp end-->
                 
+                <div id="CalenderView"></div>
+                
                 <!-- Calender start-->
-                <table id="Calender">
+                <table id="Calender" style="visibility:collapse;">
                   <tr>
                     <td class="RoundMark_left" rowspan="10" ><label class="RoundMark">〇</label></td>
                     <td class="height-10px" colspan="7" ></td>
@@ -49,7 +51,7 @@
                   <tr>
                     <td class="MonthView" rowspan="2"><label id="month" class="MonthView">６</label></td>
                     <td colspan="2"><label class="MonthEnglishView">June</label></td>
-                    <!-- beforeMonth -->
+                    <!-- LastMonth -->
                     <td rowspan="2" colspan="2">
                       <table id="LastMonth">
                           <tr>
@@ -117,6 +119,7 @@
                             <td><label class="ThisMonth_sat"></label></td>
                           </tr>
                       </table>
+                    </td>
                     <!-- nextMonth -->
                     <td rowspan="2" colspan="2">
                       <table id="nextMonth">

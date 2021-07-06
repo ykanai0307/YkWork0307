@@ -59,7 +59,7 @@ label.YearView{
 #LastMonth{
   width:80px;
   margin:0 3px 5px 3px;
-  font-size:1px !important;
+  font-size:10px !important;
   border-collapse:collapse;
   border:none;
 }
@@ -91,7 +91,7 @@ label.YearView{
 #NextMonth{
   width:80px;
   margin:0 3px 5px 3px;
-  font-size:1px !important;
+  font-size:10px !important;
   border-collapse:collapse;
   border:none;
 }

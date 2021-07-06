@@ -9,11 +9,28 @@ $(function(){
     var scroll = 0;
     
     try {
-        var startDate = MonthStartGet(0,1);    // MonthStartate
-        var endDate = MonthEndGet(1,0);        // MonthEndDate
-        dateList = DayList(startDate,endDate); // Day list create
+        let thisMonthSNum = 0;
+        let thisMonthENum = 1;
         
-        //alert(dateList[0]["date"]);
+        var startDate = MonthStartGet(thisMonthSNum,1); // MonthStartate
+        var endDate = MonthEndGet(thisMonthENum,0);     // MonthEndDate
+        let dateList = DayList(startDate,endDate);      // Day list create
+
+        var nextStartDate = MonthStartGet( (thisMonthSNum+1),1);
+        var nextEndDate = MonthEndGet( (thisMonthENum+1),0);
+        let nextDateList = DayList(nextStartDate,nextEndDate);
+        
+        var lastStartDate = MonthStartGet( (thisMonthSNum-1),1);
+        var lastEndDate = MonthEndGet( (thisMonthENum-1),0);
+        let lastDateList = DayList(lastStartDate,lastEndDate);
+        
+        var beforeLastStartDate = MonthStartGet((thisMonthSNum-2),1);
+        var beforeLastEndDate = MonthEndGet((thisMonthENum-2),0);
+        let beforeLastDateList = DayList(beforeLastStartDate,beforeLastEndDate);
+        
+        let CalendarHtml = CreateCalendar(startDate.getMonth(),startDate.getFullYear(),dateList,nextDateList,lastDateList,beforeLastDateList);
+        $('#CalenderView').html(CalendarHtml);
+        $('#CalenderView').css('visibility','visible');
     } catch(e) {
         alert("this month get faild [" + e.message + "]");
     }
@@ -78,7 +95,7 @@ $(function(){
             $('#CalenderPopUp').offset({top: initCarendarPopUpTop, left: (window.pageXOffset + e.clientX) - 115});
             
             // CalenderPopUp view
-            $('#CalenderPopUp').css('visibility','Visible');
+            $('#CalenderPopUp').css('visibility','visible');
         } catch(e) {
             alert("ppopup create faild [" + e.message + "]");
         }
@@ -96,6 +113,15 @@ $(function(){
             var csrf_token = getCookie("csrftoken");
             var url = "/mainProject/calendar_popup_click";
             post(url,true,postData,"Regist",csrf_token);
+        } catch(e) {
+            alert("popup regist faild [" + e.message + "]");
+        }
+    });
+    
+    // popup close click
+    $('#CalenderPopUpView').on('click','#Close',function(){
+        try {
+            $('#CalenderPopUp').css('visibility','collapse');
         } catch(e) {
             alert("popup regist faild [" + e.message + "]");
         }
@@ -168,12 +194,225 @@ function DayList(startDate,endDate){
     return dateList;
 }
 
+// create Calendar
+function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLastDateList){
+    let startPos = $.inArray(dateList[0]["week"], getWeekly());
+    let rowSum = Math.ceil( (startPos + dateList.length) / 7 );
+    
+    // CalenderPopUp create
+    let CalendarHtml = "<table id=\"Calender\">";
+    CalendarHtml += "  <tr>";
+    CalendarHtml += "    <td class=\"RoundMark_left\" rowspan=\"" + (rowSum + 4) + "\" ><label class=\"RoundMark\">〇</label></td>";
+    CalendarHtml += "    <td class=\"height-10px\" colspan=\"7\" ></td>";
+    CalendarHtml += "    <td class=\"RoundMark_right\" rowspan=\"" + (rowSum + 4) + "\"><label class=\"RoundMark\">〇</label></td>";
+    CalendarHtml += "  </tr>";
+    CalendarHtml += "  <tr>";
+    CalendarHtml += "    <td class=\"MonthView\" rowspan=\"2\"><label id=\"month\" class=\"MonthView\">" + month + "</label></td>";
+    CalendarHtml += "    <td colspan=\"2\"><label class=\"MonthEnglishView\">" + MonthEnglishList()[month - 1] + "</label></td>";
+    CalendarHtml += "    <td rowspan=\"2\" colspan=\"2\">"; // LastMonth
+    CalendarHtml += LastNextMonthHtml(lastDateList,beforeLastDateList);
+    CalendarHtml += "    </td>";
+    CalendarHtml += "    <td rowspan=\"2\" colspan=\"2\">"; // nextMonth
+    CalendarHtml += LastNextMonthHtml(nextDateList,dateList);
+    CalendarHtml += "    </td>";
+    CalendarHtml += "  </tr>";
+    CalendarHtml += "  <tr>";
+    CalendarHtml += "    <td><label id=\"year\" class=\"YearView\" colspan=\"2\">2021</label></td>";
+    CalendarHtml += "  </tr>";
+    CalendarHtml += "  <tr>";
+    CalendarHtml += "    <td class=\"Td_Week\"><label class=\"Week Week_sun\">SUN</label></td>";
+    CalendarHtml += "    <td class=\"Td_Week\"><label class=\"Week Week_mon\">MON</label></td>";
+    CalendarHtml += "    <td class=\"Td_Week\"><label class=\"Week Week_tue\">TUE</label></td>";
+    CalendarHtml += "    <td class=\"Td_Week\"><label class=\"Week Week_wed\">WED</label></td>";
+    CalendarHtml += "    <td class=\"Td_Week\"><label class=\"Week Week_thu\">THU</label></td>";
+    CalendarHtml += "    <td class=\"Td_Week\"><label class=\"Week Week_fri\">FRI</label></td>";
+    CalendarHtml += "    <td class=\"Td_Week Border_last_right\"><label class=\"Week Week_sat\">SAT</label></td>";
+    CalendarHtml += "  </tr>";
+    
+    // LastMonth
+    for(var l = (lastDateList.length - startPos); l < lastDateList.length;l++) {
+        let day = new Date(lastDateList[l]["date"] + " 01:01:01").getDate();
+        switch (lastDateList[l]["week"]) {
+          case "SUN":
+            CalendarHtml += "  <tr>";
+            CalendarHtml += "<td class=\"DayList Td_Day\"><label class=\"Day LastMonth_sun\">" + day + "</label></td>";
+            break;
+          case "MON":
+            CalendarHtml += "<td class=\"DayList Td_Day\"><label class=\"Day LastMonth_mon\">" + day + "</label></td>";
+            break;
+          case "TUE":
+            CalendarHtml += "<td class=\"DayList Td_Day\"><label class=\"Day LastMonth_tue\">" + day + "</label></td>";
+            break;
+          case "WED":
+            CalendarHtml += "<td class=\"DayList Td_Day\"><label class=\"Day LastMonth_wed\">" + day + "</label></td>";
+            break;
+          case "THU":
+            CalendarHtml += "<td class=\"DayList Td_Day\"><label class=\"Day LastMonth_thu\">" + day + "</label></td>";
+            break;
+          case "FRI":
+            CalendarHtml += "<td class=\"DayList Td_Day\"><label class=\"Day LastMonth_fri\">" + day + "</label></td>";
+            break;
+          case "SAT":
+            CalendarHtml += "<td class=\"DayList Td_Day Border_last_right\"><label class=\"Day LastMonth_sat\">" + day + "</label></td>";
+            CalendarHtml += "  </tr>";
+            break;
+          default:
+            break;
+        }    
+    }
+    
+    let currentRowNum = 0;
+    let cssBorderUnder = "";
+    let cssBorderLast = "";
+    // ThisMonth
+    for(var i = 0; i < dateList.length;i++) {
+        let day = new Date(dateList[i]["date"] + " 01:01:01").getDate();
+        if(rowSum <= currentRowNum){
+            cssBorderUnder = "";
+        }else{
+            cssBorderUnder = "Border_under";
+        }
+        
+        switch (dateList[i]["week"]) {
+          case "SUN":
+            CalendarHtml += "  <tr>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_sun\">" + day + "</label></td>";
+            break;
+          case "MON":
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_mon\">" + day + "</label></td>";
+            break;
+          case "TUE":
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_tue\">" + day + "</label></td>";
+            break;
+          case "WED":
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_wed\">" + day + "</label></td>";
+            break;
+          case "THU":
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_thu\">" + day + "</label></td>";
+            break;
+          case "FRI":
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_fri\">" + day + "</label></td>";
+            break;
+          case "SAT":
+            if( (dateList.length-1) == i){
+                cssBorderLast = "Border_last";
+                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + "\"><label class=\"Day ThisMonth_sat\">" + day + "</label></td>";
+            }else{
+                cssBorderLast = "Border_last_right";
+                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + "\"><label class=\"Day ThisMonth_sat\">" + day + "</label></td>";
+            }
+            CalendarHtml += "  </tr>";
+            currentRowNum += 1;
+            break;
+          default:
+            break;
+        }
+    };
+    if( (dateList.length + startPos) < (rowSum * 7) ){
+        for(var n = (dateList.length + startPos); n < (rowSum * 7);n++) {
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + "\"><label class=\"Day ThisMonth_sat\"></label></td>";
+        }
+    }
+    
+    CalendarHtml += "  <tr>";
+    CalendarHtml += "    <td class=\"RoundMark_left\" colspan=\"8\" ><label class=\"RoundMark\">〇</label></td>";
+    CalendarHtml += "    <td class=\"RoundMark_right\" ><label class=\"RoundMark\">〇</label></td>";
+    CalendarHtml += "  </tr>";
+    CalendarHtml += "</table>";
+    
+    return CalendarHtml;
+}
+
+// LastMonth
+function LastNextMonthHtml(lastDateList,beforeLastDateList){
+    let startPos = $.inArray(lastDateList[0]["week"], getWeekly());
+    let rowSum = Math.ceil( (startPos + lastDateList.length) / 7 );
+
+    let CalendarHtml = "<table id=\"LastMonth\">";
+    CalendarHtml += "    <tr>";
+    CalendarHtml += "      <td rowspan=\"7\"><label class=\"month\">" + lastDateList[0]["date"].substr(6, 1) + "</label></td>";
+    CalendarHtml += "      <td><label class=\"ThisMonth_sun\">S</label></td>";
+    CalendarHtml += "      <td><label class=\"Day ThisMonth_mon\">M</label></td>";
+    CalendarHtml += "      <td><label class=\"Day ThisMonth_tue\">T</label></td>";
+    CalendarHtml += "      <td><label class=\"Day ThisMonth_wed\">W</label></td>";
+    CalendarHtml += "      <td><label class=\"Day ThisMonth_thu\">T</label></td>";
+    CalendarHtml += "      <td><label class=\"Day ThisMonth_fri\">F</label></td>";
+    CalendarHtml += "      <td><label class=\"ThisMonth_sat\">S</label></td>";
+    CalendarHtml += "    </tr>";
+    
+    for(var l = (beforeLastDateList.length - startPos); l < beforeLastDateList.length;l++) {
+        let day = new Date(beforeLastDateList[l]["date"] + " 01:01:01").getDate();
+        switch (beforeLastDateList[l]["week"]) {
+          case "SUN":
+            CalendarHtml += "  <tr>";
+            CalendarHtml += "<td><label class=\"LastMonth_sun\">" + day + "</label></td>";
+            break;
+          case "MON":
+            CalendarHtml += "<td><label class=\"LastMonth_mon\">" + day + "</label></td>";
+            break;
+          case "TUE":
+            CalendarHtml += "<td><label class=\"LastMonth_tue\">" + day + "</label></td>";
+            break;
+          case "WED":
+            CalendarHtml += "<td><label class=\"LastMonth_wed\">" + day + "</label></td>";
+            break;
+          case "THU":
+            CalendarHtml += "<td><label class=\"LastMonth_thu\">" + day + "</label></td>";
+            break;
+          case "FRI":
+            CalendarHtml += "<td><label class=\"LastMonth_fri\">" + day + "</label></td>";
+            break;
+          case "SAT":
+            CalendarHtml += "<td><label class=\"LastMonth_sat\">" + day + "</label></td>";
+            CalendarHtml += "  </tr>";
+            break;
+          default:
+            break;
+        }    
+    }
+    // ThisMonth
+    for(var i = 0; i < lastDateList.length;i++) {
+        let day = new Date(lastDateList[i]["date"] + " 01:01:01").getDate();
+        
+        switch (lastDateList[i]["week"]) {
+          case "SUN":
+            CalendarHtml += "  <tr>";
+            CalendarHtml += "<td><label class=\"ThisMonth_sun\">" + day + "</label></td>";
+            break;
+          case "MON":
+            CalendarHtml += "<td><label class=\"Day ThisMonth_mon\">" + day + "</label></td>";
+            break;
+          case "TUE":
+            CalendarHtml += "<td><label class=\"Day ThisMonth_tue\">" + day + "</label></td>";
+            break;
+          case "WED":
+            CalendarHtml += "<td><label class=\"Day ThisMonth_wed\">" + day + "</label></td>";
+            break;
+          case "THU":
+            CalendarHtml += "<td><label class=\"Day ThisMonth_thu\">" + day + "</label></td>";
+            break;
+          case "FRI":
+            CalendarHtml += "<td><label class=\"Day ThisMonth_fri\">" + day + "</label></td>";
+            break;
+          case "SAT":
+            CalendarHtml += "<td><label class=\"ThisMonth_sat\">" + day + "</label></td>";
+            CalendarHtml += "  </tr>";
+            break;
+          default:
+            break;
+        }
+    };
+    
+    CalendarHtml += "  </table>";
+    return CalendarHtml;
+}
+
 // create popup
 function CreatePopUp(){
     // CalenderPopUp create
     let popUpHtml = " <table id=\"CalenderPopUp\">";
     popUpHtml += "  <tr>";
-    popUpHtml += "    <td class=\"day\"><label class=\"day\">17 tue</label><input type=\"button\" name=\"Close\" value=\"×\"/></td>";
+    popUpHtml += "    <td class=\"day\"><label class=\"day\">17 tue</label><input type=\"button\" id=\"Close\" name=\"Close\" value=\"×\"/></td>";
     popUpHtml += "  </tr>";
     popUpHtml += "  <tr>";
     popUpHtml += "    <td class=\"memo\"><input type=\"text\" name=\"PopUpMemo\" placeholder=\"メモを入力\"/></td>";
@@ -183,6 +422,12 @@ function CreatePopUp(){
     popUpHtml += "  </tr>";
     popUpHtml += " </table>";
     return popUpHtml;
+}
+
+// MonthEnglish
+function MonthEnglishList(){
+    var month_english_list = ['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec'];
+    return month_english_list;
 }
 
 // post(ajax)
@@ -246,7 +491,9 @@ function getHoliday(fDate){
 
 // Weekly get
 function getWeekly(){
-    return ["日","月","火","水","木","金","土"];
+    var week = ["日","月","火","水","木","金","土"];
+    var weekEnglish = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+    return weekEnglish;
 }
 
 // 0padding(NUM=値,LEN=桁数)
