@@ -19,8 +19,8 @@ class ViewGridClass:
                 # datetime convert
                 dcc = DateTimeControlClass();
                 dcc.SetDateTimeStr(data[0]);
-                dcc.DateTimeConvert(r'%Y-%m-%d %H:%M:%S',"");
-                self._grid += "<td>" + "<input type=\"tel\" name=\"CalendarDate\" value=\"" + dcc.GetDateTimeHmsStr() + "\" maxlength=\"10\" />" + "</td>";
+                dcc.DateTimeConvert(r'%Y/%m/%d %H:%M:%S',"");
+                self._grid += "<td>" + "<input type=\"tel\" name=\"CalendarDate\" value=\"" + dcc.GetDateTimeHmsStr().replace('/', '-') + "\" maxlength=\"10\" />" + "</td>";
                 self._grid += "<td>" + "<input type=\"text\" name=\"Txt\" value=\"" + str(data[1]) + "\" />" + "</td>";
                 self._grid += "<td>" + "<select name=\"Active\">" ;
                 selected = "selected";

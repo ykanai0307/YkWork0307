@@ -9,6 +9,11 @@ $(function(){
     var scroll = 0;
     
     try {
+        // TODO:携帯で見るとNaN(-を/へ 例：var date = new Date(dt.replace(/-/g,"/")); )
+        // TODO:前月 次月
+        // TODO:休日
+        // TODO:データ登録あり。印付ける
+    
         let thisMonthSNum = 0;
         let thisMonthENum = 1;
         
@@ -52,7 +57,7 @@ $(function(){
                 currentDateTime.setMonth(currentDateTime.getMonth()-1);
             }
             currentDateTime = new Date(currentDateTime.setDate(zeroPadding(lblTmp[0],2).toString()));
-            currentDate = 'YYYY-MM-DD';
+            currentDate = 'YYYY/MM/DD';
             currentDate = currentDate.replace(/YYYY/g, currentDateTime.getFullYear());
             currentDate = currentDate.replace(/MM/g, zeroPadding(currentDateTime.getMonth(),2));
             currentDate = currentDate.replace(/DD/g, zeroPadding(currentDateTime.getDate(),2));
@@ -180,7 +185,7 @@ function DayList(startDate,endDate){
     var dateList = new Array();
     try {
         for(var d = startDate; d <= endDate; d.setDate(d.getDate()+1)) {
-            var dateData = d.getFullYear() + '-' + zeroPadding( (d.getMonth()+1) ,2) + '-' + zeroPadding( d.getDate() ,2);
+            var dateData = d.getFullYear() + '/' + zeroPadding( (d.getMonth()+1) ,2) + '/' + zeroPadding( d.getDate() ,2);
             var dateArray = {
                date: dateData, 
                week: getWeekly()[d.getDay()],

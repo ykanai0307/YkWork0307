@@ -40,8 +40,9 @@ class SendValueShareClass:
         for rowNum in range(len(work[0])):
             # datetime convert
             dcc = DateTimeControlClass();
-            dcc.SetDateTimeStr( str(work[1][int(work[0][rowNum])]) );
-            dcc.DateTimeConvert(r'%Y-%m-%d %H:%M:%S',"hhMMss");
+            # datetime (-) to (/) convert
+            dcc.SetDateTimeStr( str(work[1][int(work[0][rowNum])].replace('-', '/')));
+            dcc.DateTimeConvert(r'%Y/%m/%d %H:%M:%S',"hhMMss");
             # now
             dcc.NowDateTimeConvert();
             self._result.append( ( dcc.GetDateTimeHmsStr(),str(work[2][int(work[0][rowNum])]),dcc.GetDateTimeHmsNowStr(),dcc.GetDateTimeHmsNowStr(), ) );
