@@ -8,40 +8,23 @@ $(function(){
     var initCarendarPopUpTop = 0;
     var scroll = 0;
     
+    var currentMonth = new Date().getMonth();
+    var currentYear = new Date().getFullYear();
+    
+    var startDatePos = 0;
+    var endDatePos = 0;
+    
     try {
         // TODO:携帯で見るとNaN(-を/へ 例：var date = new Date(dt.replace(/-/g,"/")); )
-        // TODO:前月 次月
         // TODO:休日
         // TODO:データ登録あり。印付ける
-    
-        let thisMonthSNum = 0;
-        let thisMonthENum = 1;
-        
-        var startDate = MonthStartGet(thisMonthSNum,1); // MonthStartate
-        var endDate = MonthEndGet(thisMonthENum,0);     // MonthEndDate
-        let dateList = DayList(startDate,endDate);      // Day list create
-
-        var nextStartDate = MonthStartGet( (thisMonthSNum+1),1);
-        var nextEndDate = MonthEndGet( (thisMonthENum+1),0);
-        let nextDateList = DayList(nextStartDate,nextEndDate);
-        
-        var lastStartDate = MonthStartGet( (thisMonthSNum-1),1);
-        var lastEndDate = MonthEndGet( (thisMonthENum-1),0);
-        let lastDateList = DayList(lastStartDate,lastEndDate);
-        
-        var beforeLastStartDate = MonthStartGet((thisMonthSNum-2),1);
-        var beforeLastEndDate = MonthEndGet((thisMonthENum-2),0);
-        let beforeLastDateList = DayList(beforeLastStartDate,beforeLastEndDate);
-        
-        let CalendarHtml = CreateCalendar(startDate.getMonth(),startDate.getFullYear(),dateList,nextDateList,lastDateList,beforeLastDateList);
-        $('#CalenderView').html(CalendarHtml);
-        $('#CalenderView').css('visibility','visible');
+        MainCreateCalendar(currentYear,currentMonth);
     } catch(e) {
         alert("this month get faild [" + e.message + "]");
     }
     
     // day click event
-    $('#Calender').on('click','.DayList',function(e){
+    $('#CalenderView').on('click','.DayList',function(e){
         try {
             var num = $('.DayList').index(this);
             var lbl = $('.DayList').eq(num).children('label');
@@ -67,7 +50,7 @@ $(function(){
             }
             
             // CalenderPopUp create
-            let popUpHtml = CreatePopUp();
+            var popUpHtml = CreatePopUp();
             
             // CalenderPopUp view set
             $('#CalenderPopUpView').html(popUpHtml);
@@ -88,8 +71,8 @@ $(function(){
             
             // date compare
             if( ( responseResult.length > 0 ) && ( responseResult[0].length > 0 ) && ( responseResult[0][0].length > 0 ) ){
-                let date1 = new Date(responseResult[0][0][0]);
-                let date2 = new Date(currentDate + " 01:01:01");
+                var date1 = new Date(responseResult[0][0][0]);
+                var date2 = new Date(currentDate + " 01:01:01");
                 if(date1.getTime() == date2.getTime()){
                     $("input[name=\"PopUpMemo\"]").val(responseResult[0][0][1]);
                 }
@@ -142,24 +125,72 @@ $(function(){
       }
     });
     
-    $('#Calender').on('click','#LastMonth',function(e){
-      var dateList = new Array();
+    // LastMonth click
+    $('#CalenderView').on('click','#LastMonth',function(e){
       try {
-        var startDate = MonthStartGet(-1,1);   // MonthStartate
-        var endDate = MonthEndGet(0,0);        // MonthEndDate
-        dateList = DayList(startDate,endDate); // Day list create
+          currentMonth -= 1;
+          if(currentMonth < 0){
+              currentYear -= 1;
+              currentMonth = 11;
+          }
+          MainCreateCalendar(currentYear,currentMonth);
+      } catch(e) {
+          alert("LastMonth click faild [" + e.message + "]");
+      }
+    });
+    
+    // NextMonth click
+    $('#CalenderView').on('click','#NextMonth',function(e){
+      try {
+          currentMonth += 1;
+          if(currentMonth > 11){
+              currentYear += 1;
+              currentMonth = 0;
+          }
+          MainCreateCalendar(currentYear,currentMonth);
       } catch(e) {
           alert("LastMonth click faild [" + e.message + "]");
       }
     });
 });
 
+
+// create
+function MainCreateCalendar(Year,Month){
+    try {
+        var startDate = MonthStartGet(Year,Month,1); // MonthStartate
+        var endDate = MonthEndGet(Year,Month + 1,0);     // MonthEndDate
+        var dateList = DayList(startDate,endDate);      // Day list create
+
+        var nextStartDate = MonthStartGet(Year,Month + 1,1);
+        var nextEndDate = MonthEndGet(Year,Month + 2,0);
+        var nextDateList = DayList(nextStartDate,nextEndDate);
+        
+        var lastStartDate = MonthStartGet(Year,Month - 1,1);
+        var lastEndDate = MonthEndGet(Year,Month,0);
+        var lastDateList = DayList(lastStartDate,lastEndDate);
+        
+        var beforeLastStartDate = MonthStartGet(Year,Month - 2,1);
+        var beforeLastEndDate = MonthEndGet(Year,Month - 1,0);
+        var beforeLastDateList = DayList(beforeLastStartDate,beforeLastEndDate);
+        
+        var CalendarHtml = CreateCalendar(Month,Year,dateList,nextDateList,lastDateList,beforeLastDateList);
+        $('#CalenderView').html(CalendarHtml);
+        $('#CalenderView').css('visibility','visible');
+        return true;
+    } catch(e) {
+        alert("CalendarCreate faild [" + e.message + "]");
+        return false;
+    }
+}
+
 // MonthStartDate
-function MonthStartGet(duration,addDate){
+function MonthStartGet(currentYear,currentMonth,addDate){
     var startDate = false;
     try {
         var dateVal = new Date();
-        dateVal.setMonth(dateVal.getMonth() + duration);
+        dateVal.setFullYear(currentYear);
+        dateVal.setMonth(currentMonth);
         startDate = new Date(dateVal.setDate(addDate));
     } catch(e) {
         alert("MonthStartGet get faild [" + e.message + "]");
@@ -168,11 +199,12 @@ function MonthStartGet(duration,addDate){
 }
 
 // MonthEndDate
-function MonthEndGet(duration,addDate){
+function MonthEndGet(currentYear,currentMonth,addDate){
     var endDate = false;
     try {
         var dateVal = new Date();
-        dateVal.setMonth(dateVal.getMonth() + duration);
+        dateVal.setFullYear(currentYear);
+        dateVal.setMonth(currentMonth);
         endDate = new Date(dateVal.setDate(addDate));
     } catch(e) {
         alert("MonthEndGet get faild [" + e.message + "]");
@@ -201,28 +233,28 @@ function DayList(startDate,endDate){
 
 // create Calendar
 function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLastDateList){
-    let startPos = $.inArray(dateList[0]["week"], getWeekly());
-    let rowSum = Math.ceil( (startPos + dateList.length) / 7 );
+    var startPos = $.inArray(dateList[0]["week"], getWeekly());
+    var rowSum = Math.ceil( (startPos + dateList.length) / 7 );
     
     // CalenderPopUp create
-    let CalendarHtml = "<table id=\"Calender\">";
+    var CalendarHtml = "<table id=\"Calender\">";
     CalendarHtml += "  <tr>";
     CalendarHtml += "    <td class=\"RoundMark_left\" rowspan=\"" + (rowSum + 4) + "\" ><label class=\"RoundMark\">〇</label></td>";
     CalendarHtml += "    <td class=\"height-10px\" colspan=\"7\" ></td>";
     CalendarHtml += "    <td class=\"RoundMark_right\" rowspan=\"" + (rowSum + 4) + "\"><label class=\"RoundMark\">〇</label></td>";
     CalendarHtml += "  </tr>";
     CalendarHtml += "  <tr>";
-    CalendarHtml += "    <td class=\"MonthView\" rowspan=\"2\"><label id=\"month\" class=\"MonthView\">" + month + "</label></td>";
-    CalendarHtml += "    <td colspan=\"2\"><label class=\"MonthEnglishView\">" + MonthEnglishList()[month - 1] + "</label></td>";
+    CalendarHtml += "    <td class=\"MonthView\" rowspan=\"2\"><label id=\"month\" class=\"MonthView\">" + (month + 1) + "</label></td>";
+    CalendarHtml += "    <td colspan=\"2\"><label class=\"MonthEnglishView\">" + MonthEnglishList()[month] + "</label></td>";
     CalendarHtml += "    <td rowspan=\"2\" colspan=\"2\">"; // LastMonth
-    CalendarHtml += LastNextMonthHtml(lastDateList,beforeLastDateList);
+    CalendarHtml += LastNextMonthHtml(lastDateList,beforeLastDateList,(month + 1),"Last");
     CalendarHtml += "    </td>";
     CalendarHtml += "    <td rowspan=\"2\" colspan=\"2\">"; // nextMonth
-    CalendarHtml += LastNextMonthHtml(nextDateList,dateList);
+    CalendarHtml += LastNextMonthHtml(nextDateList,dateList,(month + 1),"Next");
     CalendarHtml += "    </td>";
     CalendarHtml += "  </tr>";
     CalendarHtml += "  <tr>";
-    CalendarHtml += "    <td><label id=\"year\" class=\"YearView\" colspan=\"2\">2021</label></td>";
+    CalendarHtml += "    <td><label id=\"year\" class=\"YearView\" colspan=\"2\">" + year + "</label></td>";
     CalendarHtml += "  </tr>";
     CalendarHtml += "  <tr>";
     CalendarHtml += "    <td class=\"Td_Week\"><label class=\"Week Week_sun\">SUN</label></td>";
@@ -236,7 +268,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
     
     // LastMonth
     for(var l = (lastDateList.length - startPos); l < lastDateList.length;l++) {
-        let day = new Date(lastDateList[l]["date"] + " 01:01:01").getDate();
+        var day = new Date(lastDateList[l]["date"] + " 01:01:01").getDate();
         switch (lastDateList[l]["week"]) {
           case "SUN":
             CalendarHtml += "  <tr>";
@@ -266,12 +298,12 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
         }    
     }
     
-    let currentRowNum = 0;
-    let cssBorderUnder = "";
-    let cssBorderLast = "";
+    var currentRowNum = 0;
+    var cssBorderUnder = "";
+    var cssBorderLast = "";
     // ThisMonth
     for(var i = 0; i < dateList.length;i++) {
-        let day = new Date(dateList[i]["date"] + " 01:01:01").getDate();
+        var day = new Date(dateList[i]["date"] + " 01:01:01").getDate();
         if(rowSum <= currentRowNum){
             cssBorderUnder = "";
         }else{
@@ -329,13 +361,27 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
 }
 
 // LastMonth
-function LastNextMonthHtml(lastDateList,beforeLastDateList){
-    let startPos = $.inArray(lastDateList[0]["week"], getWeekly());
-    let rowSum = Math.ceil( (startPos + lastDateList.length) / 7 );
+function LastNextMonthHtml(lastDateList,beforeLastDateList,month,Mode){
+    var startPos = $.inArray(lastDateList[0]["week"], getWeekly());
+    var rowSum = Math.ceil( (startPos + lastDateList.length) / 7 );
 
-    let CalendarHtml = "<table id=\"LastMonth\">";
+    if(Mode == "Last"){
+      if(month == 1){
+        month = 12;
+      }else{
+        month -= 1;
+      }
+      var CalendarHtml = "<table id=\"LastMonth\">";
+    }else{
+      if(month == 12){
+        month = 1;
+      }else{
+        month += 1;
+      }
+      var CalendarHtml = "<table id=\"NextMonth\">";
+    }
     CalendarHtml += "    <tr>";
-    CalendarHtml += "      <td rowspan=\"7\"><label class=\"month\">" + lastDateList[0]["date"].substr(6, 1) + "</label></td>";
+    CalendarHtml += "      <td rowspan=\"7\"><label class=\"month\">" + month + "</label></td>";
     CalendarHtml += "      <td><label class=\"ThisMonth_sun\">S</label></td>";
     CalendarHtml += "      <td><label class=\"Day ThisMonth_mon\">M</label></td>";
     CalendarHtml += "      <td><label class=\"Day ThisMonth_tue\">T</label></td>";
@@ -346,7 +392,7 @@ function LastNextMonthHtml(lastDateList,beforeLastDateList){
     CalendarHtml += "    </tr>";
     
     for(var l = (beforeLastDateList.length - startPos); l < beforeLastDateList.length;l++) {
-        let day = new Date(beforeLastDateList[l]["date"] + " 01:01:01").getDate();
+        var day = new Date(beforeLastDateList[l]["date"] + " 01:01:01").getDate();
         switch (beforeLastDateList[l]["week"]) {
           case "SUN":
             CalendarHtml += "  <tr>";
@@ -377,7 +423,7 @@ function LastNextMonthHtml(lastDateList,beforeLastDateList){
     }
     // ThisMonth
     for(var i = 0; i < lastDateList.length;i++) {
-        let day = new Date(lastDateList[i]["date"] + " 01:01:01").getDate();
+        var day = new Date(lastDateList[i]["date"] + " 01:01:01").getDate();
         
         switch (lastDateList[i]["week"]) {
           case "SUN":
@@ -415,7 +461,7 @@ function LastNextMonthHtml(lastDateList,beforeLastDateList){
 // create popup
 function CreatePopUp(){
     // CalenderPopUp create
-    let popUpHtml = " <table id=\"CalenderPopUp\">";
+    var popUpHtml = " <table id=\"CalenderPopUp\">";
     popUpHtml += "  <tr>";
     popUpHtml += "    <td class=\"day\"><label class=\"day\">17 tue</label><input type=\"button\" id=\"Close\" name=\"Close\" value=\"×\"/></td>";
     popUpHtml += "  </tr>";
@@ -486,7 +532,7 @@ function OnSet(response){
 function getHoliday(fDate){
     var holiday = Holiday();
     var result = "";
-    for (let i=0; i < holiday.length; i++) {
+    for (var i=0; i < holiday.length; i++) {
           if (new Date(fDate).getTime() == new Date(holiday[i]["date"]).getTime()){
               result = holiday[i]["name"];
           }
