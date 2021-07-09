@@ -1,4 +1,5 @@
 // calendar(main)
+var DefhhMMss = " 01:01:01";
 $(function(){
     // global var
     var currentDate = '20210624';
@@ -15,9 +16,7 @@ $(function(){
     var endDatePos = 0;
     
     try {
-        // TODO:携帯で見るとNaN(-を/へ 例：var date = new Date(dt.replace(/-/g,"/")); )
-        // TODO:休日
-        // TODO:データ登録あり。印付ける
+        // TODO:データ登録あり。印付ける 仮で印だけ表示。
         MainCreateCalendar(currentYear,currentMonth);
     } catch(e) {
         alert("this month get faild [" + e.message + "]");
@@ -30,16 +29,16 @@ $(function(){
             var lbl = $('.DayList').eq(num).children('label');
             var pos = 0;
             pos = num % 7;
-            var label = $('#Calender').find('label.Week')[pos];
+            var label = $('#CalenderView').find('label.Week')[pos];
             
             // select (year month date) set
-            var lblTmp = lbl[0].innerText.split('\n');
-            currentDateTime = new Date(hankakuZenkaku($('#year')[0].innerText).toString(), zeroPadding(hankakuZenkaku($('#month')[0].innerText),2).toString(), zeroPadding(hankakuZenkaku(lblTmp[0]),2).toString(), "01", "01", "01");
+            var lblTmp = lbl[0].innerText.replace("〇", "").split('\n');
+            currentDateTime = new Date(hankakuZenkaku($('#year')[0].innerText).toString(), zeroPadding(hankakuZenkaku($('#month')[0].innerText),2).toString(), zeroPadding(hankakuZenkaku(Number(lblTmp[0]).toString()),2).toString(), "01", "01", "01");
             var monthCateg = lbl[0].classList[1].split('_');
             if(monthCateg[0] == "LastMonth"){
                 currentDateTime.setMonth(currentDateTime.getMonth()-1);
             }
-            currentDateTime = new Date(currentDateTime.setDate(zeroPadding(lblTmp[0],2).toString()));
+            currentDateTime = new Date(currentDateTime.setDate(zeroPadding(Number(lblTmp[0]),2).toString()));
             currentDate = 'YYYY/MM/DD';
             currentDate = currentDate.replace(/YYYY/g, currentDateTime.getFullYear());
             currentDate = currentDate.replace(/MM/g, zeroPadding(currentDateTime.getMonth(),2));
@@ -60,7 +59,7 @@ $(function(){
             if(lblTmp.length > 1){
                 holidayLabel = '\n' + lblTmp[1];
             }
-            $('#CalenderPopUp').find('label.day').text(zeroPadding( lblTmp[0] ,2) + " " + label.innerText + " " + holidayLabel);
+            $('#CalenderPopUp').find('label.day').text(zeroPadding( Number(lblTmp[0]) ,2) + " " + label.innerText + " " + holidayLabel);
             
             // init(select) val set
             postData = {};
@@ -72,7 +71,7 @@ $(function(){
             // date compare
             if( ( responseResult.length > 0 ) && ( responseResult[0].length > 0 ) && ( responseResult[0][0].length > 0 ) ){
                 var date1 = new Date(responseResult[0][0][0]);
-                var date2 = new Date(currentDate + " 01:01:01");
+                var date2 = new Date(currentDate + DefhhMMss);
                 if(date1.getTime() == date2.getTime()){
                     $("input[name=\"PopUpMemo\"]").val(responseResult[0][0][1]);
                 }
@@ -158,8 +157,8 @@ $(function(){
 // create
 function MainCreateCalendar(Year,Month){
     try {
-        var startDate = MonthStartGet(Year,Month,1); // MonthStartate
-        var endDate = MonthEndGet(Year,Month + 1,0);     // MonthEndDate
+        var startDate = MonthStartGet(Year,Month,1);    // MonthStartate
+        var endDate = MonthEndGet(Year,Month + 1,0);    // MonthEndDate
         var dateList = DayList(startDate,endDate);      // Day list create
 
         var nextStartDate = MonthStartGet(Year,Month + 1,1);
@@ -235,16 +234,22 @@ function DayList(startDate,endDate){
 function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLastDateList){
     var startPos = $.inArray(dateList[0]["week"], getWeekly());
     var rowSum = Math.ceil( (startPos + dateList.length) / 7 );
+    var MonthViewCss = "";
+    if(String((month + 1)).length > 1){
+        MonthViewCss = "MonthViewTwoUnit";
+    }else{
+        MonthViewCss = "MonthView";
+    }
     
     // CalenderPopUp create
     var CalendarHtml = "<table id=\"Calender\">";
     CalendarHtml += "  <tr>";
     CalendarHtml += "    <td class=\"RoundMark_left\" rowspan=\"" + (rowSum + 4) + "\" ><label class=\"RoundMark\">〇</label></td>";
-    CalendarHtml += "    <td class=\"height-10px\" colspan=\"7\" ></td>";
+    CalendarHtml += "    <td class=\"height-15px\" colspan=\"7\" ></td>";
     CalendarHtml += "    <td class=\"RoundMark_right\" rowspan=\"" + (rowSum + 4) + "\"><label class=\"RoundMark\">〇</label></td>";
     CalendarHtml += "  </tr>";
     CalendarHtml += "  <tr>";
-    CalendarHtml += "    <td class=\"MonthView\" rowspan=\"2\"><label id=\"month\" class=\"MonthView\">" + (month + 1) + "</label></td>";
+    CalendarHtml += "    <td class=\"MonthView\" rowspan=\"2\"><label id=\"month\" class=\"" + MonthViewCss + "\">" + (month + 1) + "</label></td>";
     CalendarHtml += "    <td colspan=\"2\"><label class=\"MonthEnglishView\">" + MonthEnglishList()[month] + "</label></td>";
     CalendarHtml += "    <td rowspan=\"2\" colspan=\"2\">"; // LastMonth
     CalendarHtml += LastNextMonthHtml(lastDateList,beforeLastDateList,(month + 1),"Last");
@@ -268,7 +273,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
     
     // LastMonth
     for(var l = (lastDateList.length - startPos); l < lastDateList.length;l++) {
-        var day = new Date(lastDateList[l]["date"] + " 01:01:01").getDate();
+        var day = new Date(lastDateList[l]["date"] + DefhhMMss).getDate();
         switch (lastDateList[l]["week"]) {
           case "SUN":
             CalendarHtml += "  <tr>";
@@ -301,42 +306,67 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
     var currentRowNum = 0;
     var cssBorderUnder = "";
     var cssBorderLast = "";
+    var cssToday = "";
+    var RegistMemoMarkHtml = "<span class=\"Circle\">〇</span>";
+    var RegistMemoMarkSpaceHtml = "<span class=\"Circle\">&nbsp;&nbsp;&nbsp;〇</span>";
+    var HolidayHtml = "";
     // ThisMonth
     for(var i = 0; i < dateList.length;i++) {
-        var day = new Date(dateList[i]["date"] + " 01:01:01").getDate();
+        var day = new Date(dateList[i]["date"] + DefhhMMss).getDate();
+        HolidayHtml = "<br/><label class=\"HolidayName\">" + dateList[i]["holiday"] + "</label>";
+        
+        // today search
+        var now = new Date();
+        var yy = now.getFullYear();
+        var mm = zeroPadding( now.getMonth() + 1 ,2);
+        var dd = zeroPadding( now.getDate() ,2);
+        var now = new Date(yy.toString() + "/" + mm.toString() + "/" + dd.toString() + DefhhMMss);
+        if(now.getTime() == new Date(dateList[i]["date"] + DefhhMMss).getTime()){
+            cssToday = "today";
+        }else{
+            cssToday = "";
+        }
+        
         if(rowSum <= currentRowNum){
             cssBorderUnder = "";
         }else{
             cssBorderUnder = "Border_under";
         }
         
+        var Mark = "";
+        if(day.toString().length < 2){
+            Mark = RegistMemoMarkSpaceHtml;
+        }else{
+            Mark = RegistMemoMarkHtml;
+        }
+        
         switch (dateList[i]["week"]) {
           case "SUN":
             CalendarHtml += "  <tr>";
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_sun\">" + day + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_sun\">" + day + Mark + HolidayHtml + "</label></td>";
             break;
           case "MON":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_mon\">" + day + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_mon\">" + day + Mark + HolidayHtml + "</label></td>";
             break;
           case "TUE":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_tue\">" + day + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_tue\">" + day + Mark + HolidayHtml + "</label></td>";
             break;
           case "WED":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_wed\">" + day + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_wed\">" + day + Mark + HolidayHtml + "</label></td>";
             break;
           case "THU":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_thu\">" + day + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_thu\">" + day + Mark + HolidayHtml + "</label></td>";
             break;
           case "FRI":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + "\"><label class=\"Day ThisMonth_fri\">" + day + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_fri\">" + day + Mark + HolidayHtml + "</label></td>";
             break;
           case "SAT":
             if( (dateList.length-1) == i){
                 cssBorderLast = "Border_last";
-                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + "\"><label class=\"Day ThisMonth_sat\">" + day + "</label></td>";
+                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + " " + cssToday + "\"><label class=\"Day ThisMonth_sat\">" + day + Mark + HolidayHtml + "</label></td>";
             }else{
                 cssBorderLast = "Border_last_right";
-                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + "\"><label class=\"Day ThisMonth_sat\">" + day + "</label></td>";
+                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + " " + cssToday + "\"><label class=\"Day ThisMonth_sat\">" + day + Mark + HolidayHtml + "</label></td>";
             }
             CalendarHtml += "  </tr>";
             currentRowNum += 1;
@@ -345,6 +375,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
             break;
         }
     };
+    // empty day add
     if( (dateList.length + startPos) < (rowSum * 7) ){
         for(var n = (dateList.length + startPos); n < (rowSum * 7);n++) {
             CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + "\"><label class=\"Day ThisMonth_sat\"></label></td>";
@@ -392,7 +423,7 @@ function LastNextMonthHtml(lastDateList,beforeLastDateList,month,Mode){
     CalendarHtml += "    </tr>";
     
     for(var l = (beforeLastDateList.length - startPos); l < beforeLastDateList.length;l++) {
-        var day = new Date(beforeLastDateList[l]["date"] + " 01:01:01").getDate();
+        var day = new Date(beforeLastDateList[l]["date"] + DefhhMMss).getDate();
         switch (beforeLastDateList[l]["week"]) {
           case "SUN":
             CalendarHtml += "  <tr>";
@@ -423,7 +454,7 @@ function LastNextMonthHtml(lastDateList,beforeLastDateList,month,Mode){
     }
     // ThisMonth
     for(var i = 0; i < lastDateList.length;i++) {
-        var day = new Date(lastDateList[i]["date"] + " 01:01:01").getDate();
+        var day = new Date(lastDateList[i]["date"] + DefhhMMss).getDate();
         
         switch (lastDateList[i]["week"]) {
           case "SUN":
@@ -533,7 +564,7 @@ function getHoliday(fDate){
     var holiday = Holiday();
     var result = "";
     for (var i=0; i < holiday.length; i++) {
-          if (new Date(fDate).getTime() == new Date(holiday[i]["date"]).getTime()){
+          if (new Date(fDate + DefhhMMss).getTime() == new Date(holiday[i]["date"] + DefhhMMss).getTime()){
               result = holiday[i]["name"];
           }
     }
