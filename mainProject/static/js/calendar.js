@@ -377,7 +377,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
         
         // holiday tag set
         if(dateList[i]["holiday"].length > 0){
-            HolidayHtml = "<span class=\"Holiday HolidayName\">" + dateList[i]["holiday"] + "</span>";
+            HolidayHtml = "<label class=\"Holiday HolidayName\">" + dateList[i]["holiday"] + "</label>";
         }else{
             HolidayHtml = "";
         }
@@ -385,30 +385,30 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
         switch (dateList[i]["week"]) {
           case "SUN":
             CalendarHtml += "  <tr>";
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_sun\">" + day + Mark + HolidayHtml + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_sun\">" + day + Mark + "</label>" + HolidayHtml + "</td>";
             break;
           case "MON":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_mon\">" + day + Mark + HolidayHtml + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_mon\">" + day + Mark + "</label>" + HolidayHtml + "</td>";
             break;
           case "TUE":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_tue\">" + day + Mark + HolidayHtml + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_tue\">" + day + Mark + "</label>" + HolidayHtml + "</td>";
             break;
           case "WED":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_wed\">" + day + Mark + HolidayHtml + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_wed\">" + day + Mark + "</label>" + HolidayHtml + "</td>";
             break;
           case "THU":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_thu\">" + day + Mark + HolidayHtml + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_thu\">" + day + Mark + "</label>" + HolidayHtml + "</td>";
             break;
           case "FRI":
-            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_fri\">" + day + Mark + HolidayHtml + "</label></td>";
+            CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssToday + "\"><label class=\"Day ThisMonth_fri\">" + day + Mark + "</label>" + HolidayHtml + "</td>";
             break;
           case "SAT":
             if( (dateList.length-1) == i){
                 cssBorderLast = "Border_last";
-                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + " " + cssToday + "\"><label class=\"Day ThisMonth_sat\">" + day + Mark + HolidayHtml + "</label></td>";
+                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + " " + cssToday + "\"><label class=\"Day ThisMonth_sat\">" + day + Mark + "</label>" + HolidayHtml + "</td>";
             }else{
                 cssBorderLast = "Border_last_right";
-                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + " " + cssToday + "\"><label class=\"Day ThisMonth_sat\">" + day + Mark + HolidayHtml + "</label></td>";
+                CalendarHtml += "<td class=\"DayList Td_Day " + cssBorderUnder + " " + cssBorderLast + " " + cssToday + "\"><label class=\"Day ThisMonth_sat\">" + day + Mark + "</label>" + HolidayHtml + "</td>";
             }
             CalendarHtml += "  </tr>";
             currentRowNum += 1;

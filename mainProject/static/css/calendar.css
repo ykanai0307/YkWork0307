@@ -177,10 +177,13 @@ label.Week_sat{
 #Calender label.Day{
   padding:0px 0px 20px 3px;
 }
-span.Holiday{
+label.Holiday{
   color:#C53935 !important;
+  position:relative;
+  top:-25px;
+  left:2px;
 }
-#Calender td span.HolidayName{
+#Calender td label.HolidayName{
   font-size:10px;
   color:#ECAB90;
 }
