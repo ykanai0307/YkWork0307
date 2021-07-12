@@ -375,7 +375,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
         
         // holiday tag set
         if(dateList[i]["holiday"].length > 0){
-            HolidayHtml = "<br/><label class=\"HolidayName\">" + dateList[i]["holiday"] + "</label>";
+            HolidayHtml = "<br/><span class=\"HolidayName\">" + dateList[i]["holiday"] + "</span>";
         }else{
             HolidayHtml = "";
         }
