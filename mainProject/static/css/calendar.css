@@ -179,9 +179,6 @@ label.Week_sat{
 }
 label.Holiday{
   color:#C53935 !important;
-  position:relative;
-  top:-25px;
-  left:2px;
 }
 #Calender td label.HolidayName{
   font-size:10px;

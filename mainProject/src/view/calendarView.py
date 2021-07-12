@@ -106,7 +106,6 @@ class calendarView(View):
                       EndDate = request.POST.get('postData[endDate]');
                   valueList = ( str(StartDate),str(EndDate),0, );
                   cls._data = cls.SelectSql(valueList,"Turm");
-                  print(cls._data);
               elif Mode == "Regist":
                   if request.POST.get('postData[Memo]') != None:
                       Memo = request.POST.get('postData[Memo]');
