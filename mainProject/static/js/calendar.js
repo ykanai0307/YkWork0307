@@ -1,10 +1,12 @@
 // calendar(main)
+var responseResult;
 var DefhhMMss = " 01:01:01";
+var DefStarthhMMss = " 00:00:01";
+var DefEndhhMMss = " 23:59:59";
 $(function(){
     // global var
     var currentDate = '20210624';
     var currentDateTime = "";
-    var responseResult;
     
     var initCarendarPopUpTop = 0;
     var scroll = 0;
@@ -16,7 +18,6 @@ $(function(){
     var endDatePos = 0;
     
     try {
-        // TODO:データ登録あり。印付ける 仮で印だけ表示。
         MainCreateCalendar(currentYear,currentMonth);
     } catch(e) {
         alert("this month get faild [" + e.message + "]");
@@ -153,6 +154,63 @@ $(function(){
     });
 });
 
+// db to carendarData get
+function GetCarendarData(Year,Month){
+   try {
+       postData = {};
+       postData['Mode'] = "SetAll";
+       var s = Year + "/" + zeroPadding((Month + 1).toString(),2) + "/01" + DefStarthhMMss;
+       var e = Year + "/" + zeroPadding((Month + 2).toString(),2) + "/01" + DefEndhhMMss;
+       var startDate = new Date(s).setDate(1);
+       var endDate = new Date(e).setDate(0);
+       var startDate = getStringFromDate(new Date(startDate));
+       var endDate = getStringFromDate(new Date(endDate));
+       postData['startDate'] = startDate;
+       postData['endDate'] = endDate;
+       
+       //postData['Date'] = Year + zeroPadding( Month.toString() ,2);
+       postData['Memo'] = $("input[name=\"PopUpMemo\"]").val();
+       
+       // csrf_token (post)
+       var csrf_token = getCookie("csrftoken");
+       var url = "/mainProject/calendar_popup_click";
+       var result = [];
+       post(url,false,postData,"SetAll",csrf_token);
+       if( ( responseResult.length > 0 ) && ( responseResult[0].length > 0 ) && ( responseResult[0][0].length > 0 ) ){
+           for(var i = 0;i<responseResult[0].length;i++) {
+               result.push(responseResult[0][i][0]);
+           }
+       }
+       return result;
+   } catch(e) {
+       alert("GetCarendarData faild [" + e.message + "]");
+   }
+}
+
+// date to string
+function getStringFromDate(date) {
+   try {
+       var year_str = date.getFullYear();
+       // 月だけ+1すること
+       var month_str = 1 + date.getMonth();
+       var day_str = date.getDate();
+       var hour_str = date.getHours();
+       var minute_str = date.getMinutes();
+       var second_str = date.getSeconds();
+       
+       format_str = 'YYYY/MM/DD hh:mm:ss';
+       format_str = format_str.replace(/YYYY/g, year_str);
+       format_str = format_str.replace(/MM/g, zeroPadding(month_str,2));
+       format_str = format_str.replace(/DD/g, zeroPadding(day_str,2));
+       format_str = format_str.replace(/hh/g, zeroPadding(hour_str,2));
+       format_str = format_str.replace(/mm/g, zeroPadding(minute_str,2));
+       format_str = format_str.replace(/ss/g, zeroPadding(second_str,2));
+       
+       return format_str;
+   } catch(e) {
+       alert("getStringFromDate faild [" + e.message + "]");
+   }
+};
 
 // create
 function MainCreateCalendar(Year,Month){
@@ -173,7 +231,7 @@ function MainCreateCalendar(Year,Month){
         var beforeLastEndDate = MonthEndGet(Year,Month - 1,0);
         var beforeLastDateList = DayList(beforeLastStartDate,beforeLastEndDate);
         
-        var CalendarHtml = CreateCalendar(Month,Year,dateList,nextDateList,lastDateList,beforeLastDateList);
+        var CalendarHtml = CreateCalendar(Month,Year,dateList,nextDateList,lastDateList,beforeLastDateList,GetCarendarData(Year,Month));
         $('#CalenderView').html(CalendarHtml);
         $('#CalenderView').css('visibility','visible');
         return true;
@@ -231,7 +289,7 @@ function DayList(startDate,endDate){
 }
 
 // create Calendar
-function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLastDateList){
+function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLastDateList,CarendarDataList){
     var startPos = $.inArray(dateList[0]["week"], getWeekly());
     var rowSum = Math.ceil( (startPos + dateList.length) / 7 );
     var MonthViewCss = "";
@@ -310,6 +368,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
     var RegistMemoMarkHtml = "<span class=\"Circle\">〇</span>";
     var RegistMemoMarkSpaceHtml = "<span class=\"Circle\">&nbsp;&nbsp;&nbsp;〇</span>";
     var HolidayHtml = "";
+    
     // ThisMonth
     for(var i = 0; i < dateList.length;i++) {
         var day = new Date(dateList[i]["date"] + DefhhMMss).getDate();
@@ -317,10 +376,8 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
         
         // today search
         var now = new Date();
-        var yy = now.getFullYear();
-        var mm = zeroPadding( now.getMonth() + 1 ,2);
-        var dd = zeroPadding( now.getDate() ,2);
-        var now = new Date(yy.toString() + "/" + mm.toString() + "/" + dd.toString() + DefhhMMss);
+        var now = new Date(now.getFullYear().toString() + "/" + zeroPadding( now.getMonth() + 1 ,2).toString() + "/" + zeroPadding( now.getDate() ,2).toString() + DefhhMMss);
+        // today select
         if(now.getTime() == new Date(dateList[i]["date"] + DefhhMMss).getTime()){
             cssToday = "today";
         }else{
@@ -334,10 +391,12 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
         }
         
         var Mark = "";
-        if(day.toString().length < 2){
-            Mark = RegistMemoMarkSpaceHtml;
-        }else{
-            Mark = RegistMemoMarkHtml;
+        if( $.inArray( (dateList[i]["date"] + DefhhMMss), CarendarDataList) > -1 ){
+            if(day.toString().length < 2){
+                Mark = RegistMemoMarkSpaceHtml;
+            }else{
+                Mark = RegistMemoMarkHtml;
+            }
         }
         
         switch (dateList[i]["week"]) {

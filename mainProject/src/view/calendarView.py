@@ -82,6 +82,8 @@ class calendarView(View):
       cls._mes = "";
       Mode = "";
       Date = "";
+      StartDate = "";
+      EndDate = "";
       Memo = "";
       if request.method == 'POST':
           try:
@@ -97,6 +99,14 @@ class calendarView(View):
               if Mode == "Set":
                   valueList = ( str(Date + " 01:01:01"),0, );
                   cls._data = cls.SelectSql(valueList);
+              if Mode == "SetAll":
+                  if request.POST.get('postData[startDate]') != None:
+                      StartDate = request.POST.get('postData[startDate]');
+                  if request.POST.get('postData[endDate]') != None:
+                      EndDate = request.POST.get('postData[endDate]');
+                  valueList = ( str(StartDate),str(EndDate),0, );
+                  cls._data = cls.SelectSql(valueList,"Turm");
+                  print(cls._data);
               elif Mode == "Regist":
                   if request.POST.get('postData[Memo]') != None:
                       Memo = request.POST.get('postData[Memo]');
@@ -141,22 +151,26 @@ class calendarView(View):
       return cls._json.ReturnResponse();
 
   @classmethod
-  def SelectSql(cls,valueList):
+  def SelectSql(cls,valueList,Mode=""):
       cls._db = DataBaseClass();
       cls._db.DbConnect(DBMode.SQLITE);
       cls._db.DbCursor();
       cls._qr = Query();
-      calendarView.SelfSelect(cls._db,cls._qr,valueList);
+      calendarView.SelfSelect(cls._db,cls._qr,valueList,Mode);
       return cls._db.FetchAll();
       
   # (privateMethod)select
   @classmethod
-  def SelfSelect(cls,dbBase,sqlClass,valueList):
+  def SelfSelect(cls,dbBase,sqlClass,valueList,Mode=""):
       try:
           sqlClass.SetTableName("T_PLANS");
           sqlClass.SetCollum("CalendarDateTime");
           sqlClass.SetCollum("Txt");
-          sqlClass.SetWhereList(" AND CalendarDateTime = ? ");
+          if Mode == "Turm":
+              sqlClass.SetWhereList(" AND CalendarDateTime >= ? ");
+              sqlClass.SetWhereList(" AND CalendarDateTime <= ? ");
+          else:
+              sqlClass.SetWhereList(" AND CalendarDateTime = ? ");
           sqlClass.SetWhereList(" AND Active = ? ");
           cls._sql = sqlClass.Select();
           dbBase.DbBindExecute(cls._sql,valueList);
