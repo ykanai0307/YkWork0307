@@ -187,31 +187,6 @@ function GetCarendarData(Year,Month){
    }
 }
 
-// date to string
-function getStringFromDate(date) {
-   try {
-       var year_str = date.getFullYear();
-       // 月だけ+1すること
-       var month_str = 1 + date.getMonth();
-       var day_str = date.getDate();
-       var hour_str = date.getHours();
-       var minute_str = date.getMinutes();
-       var second_str = date.getSeconds();
-       
-       format_str = 'YYYY/MM/DD hh:mm:ss';
-       format_str = format_str.replace(/YYYY/g, year_str);
-       format_str = format_str.replace(/MM/g, zeroPadding(month_str,2));
-       format_str = format_str.replace(/DD/g, zeroPadding(day_str,2));
-       format_str = format_str.replace(/hh/g, zeroPadding(hour_str,2));
-       format_str = format_str.replace(/mm/g, zeroPadding(minute_str,2));
-       format_str = format_str.replace(/ss/g, zeroPadding(second_str,2));
-       
-       return format_str;
-   } catch(e) {
-       alert("getStringFromDate faild [" + e.message + "]");
-   }
-};
-
 // create
 function MainCreateCalendar(Year,Month){
     try {
@@ -372,8 +347,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
     // ThisMonth
     for(var i = 0; i < dateList.length;i++) {
         var day = new Date(dateList[i]["date"] + DefhhMMss).getDate();
-        HolidayHtml = "<br/><label class=\"HolidayName\">" + dateList[i]["holiday"] + "</label>";
-        
+
         // today search
         var now = new Date();
         var now = new Date(now.getFullYear().toString() + "/" + zeroPadding( now.getMonth() + 1 ,2).toString() + "/" + zeroPadding( now.getDate() ,2).toString() + DefhhMMss);
@@ -397,6 +371,13 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
             }else{
                 Mark = RegistMemoMarkHtml;
             }
+        }
+        
+        // holiday tag set
+        if(dateList[i]["holiday"].length > 0){
+            HolidayHtml = "<br/><label class=\"HolidayName\">" + dateList[i]["holiday"] + "</label>";
+        }else{
+            HolidayHtml = "";
         }
         
         switch (dateList[i]["week"]) {
@@ -649,6 +630,31 @@ function hankakuZenkaku(text){
     });
     return hen;
 }
+
+// date to string
+function getStringFromDate(date) {
+   try {
+       var year_str = date.getFullYear();
+       // 月だけ+1すること
+       var month_str = 1 + date.getMonth();
+       var day_str = date.getDate();
+       var hour_str = date.getHours();
+       var minute_str = date.getMinutes();
+       var second_str = date.getSeconds();
+       
+       format_str = 'YYYY/MM/DD hh:mm:ss';
+       format_str = format_str.replace(/YYYY/g, year_str);
+       format_str = format_str.replace(/MM/g, zeroPadding(month_str,2));
+       format_str = format_str.replace(/DD/g, zeroPadding(day_str,2));
+       format_str = format_str.replace(/hh/g, zeroPadding(hour_str,2));
+       format_str = format_str.replace(/mm/g, zeroPadding(minute_str,2));
+       format_str = format_str.replace(/ss/g, zeroPadding(second_str,2));
+       
+       return format_str;
+   } catch(e) {
+       alert("getStringFromDate faild [" + e.message + "]");
+   }
+};
 
 // csrf_token get(django)
 function getCookie( name ) {
