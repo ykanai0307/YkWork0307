@@ -189,7 +189,7 @@ td.Td_Day{
   border-left:1px dotted #9E9D9E;
 }
 #Calender td.Td_Holiday{
-  padding:0px 0px 5px 3px;
+  padding:0px 0px -20px -3px;
   border-top:1px dotted #9E9D9E;
   border-left:1px dotted #9E9D9E;
 }
@@ -224,10 +224,9 @@ label.ThisMonth_mon,label.ThisMonth_tue,label.ThisMonth_wed,label.ThisMonth_thu,
 #Calender label span.Circle{
   position: relative;
   top:-5px;
-  left:25px;
+  left:23px;
   color:#85BBE6;
   font-size:11px;
-  font-weight:bold;
 }
 
 /* popup */

@@ -100,7 +100,8 @@ $(function(){
             // csrf_token (post)
             var csrf_token = getCookie("csrftoken");
             var url = "/mainProject/calendar_popup_click";
-            post(url,true,postData,"Regist",csrf_token);
+            post(url,false,postData,"Regist",csrf_token);
+            MainCreateCalendar(currentYear,currentMonth);
         } catch(e) {
             alert("popup regist faild [" + e.message + "]");
         }
@@ -343,6 +344,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
     var RegistMemoMarkHtml = "<span class=\"Circle\">〇</span>";
     var RegistMemoMarkSpaceHtml = "<span class=\"Circle\">&nbsp;&nbsp;&nbsp;〇</span>";
     var HolidayHtml = "";
+    var tdHolidayCss = "";
     
     // ThisMonth
     for(var i = 0; i < dateList.length;i++) {
@@ -375,7 +377,7 @@ function CreateCalendar(month,year,dateList,nextDateList,lastDateList,beforeLast
         
         // holiday tag set
         if(dateList[i]["holiday"].length > 0){
-            HolidayHtml = "<br/><span class=\"HolidayName\">" + dateList[i]["holiday"] + "</span>";
+            HolidayHtml = "<span class=\"Holiday HolidayName\">" + dateList[i]["holiday"] + "</span>";
         }else{
             HolidayHtml = "";
         }
