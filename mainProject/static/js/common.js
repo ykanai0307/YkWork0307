@@ -15,20 +15,18 @@ $(function(){
     });
 });
 
-$(window).on('load',function(){
-    // submit
-    function SubmitTarget(url,type,method){
-      var formObject = document.getElementById('MainForm');
-      if(type != ""){
-          formObject.enctype="multipart/form-data";
-      }
+// submit
+function SubmitTarget(url,method){
+  var formObject = document.getElementById('MainForm');
+  if(url != null){
       formObject.action = url;
-      if(method == "get"){
-          formObject.method = "get";
-      }else{
-          formObject.method = "post";
-      }
-      formObject.submit();
-      formObject.action = "";
-    }
-});
+  }
+  if(method == "get"){
+      formObject.method = "get";
+  }else{
+      formObject.method = "post";
+  }
+  formObject.submit();
+  formObject.action = "";
+  return true;
+}
