@@ -69,10 +69,6 @@ class Query:
                 self._sql += str(self._collum[i] + ",");
             i = i + 1;
             
-        # レコードを登録
-        # persons = [(1, 'Steave'), (2, 'Eric'), (3, 'Mike')]
-        # cur.executemany("INSERT INTO members VALUES (?, ?)", persons)
-            
         self._sql += " VALUES (";
         for counter in range(len(self._collum)):
             if (len(self._collum) - 1) <= counter:

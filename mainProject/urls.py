@@ -6,6 +6,7 @@ from .src.view.calendarView import calendarView
 
 urlpatterns = [
     url(r'^$', menuView.as_view(), name='menu'),
+    path(r'logout', menuView.logout, name='logout'),
     path(r'main', mainView.as_view(), name='main'),
     path(r'db_create_table', mainView.db_create_table, name='yk_db_create_table'),
     path(r'db_delete_table', mainView.db_delete_table, name='yk_db_delete_table'),

@@ -13,6 +13,24 @@ $(function(){
             alert("popup regist faild [" + e.message + "]");
         }
     });
+    
+    // auth select login
+    $('#header').on('click','#login',function(){
+        try {
+            SubmitTarget('./','post');
+        } catch(e) {
+            alert("select change faild [" + e.message + "]");
+        }
+    });
+    
+    // logout
+    $('#header').on('click','#logout',function(){
+        try {
+            SubmitTarget('logout','post');
+        } catch(e) {
+            alert("select change faild [" + e.message + "]");
+        }
+    });
 });
 
 // submit

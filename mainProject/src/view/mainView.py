@@ -6,6 +6,7 @@ from django.views.generic import View                   # to class
 from ..define.DBModeEnum import DBMode                  # DB mode(sqllite mysql)
 from ..module.dirPath import dirPathClass               # path class
 from ..module.DataBase import DataBaseClass             # DBbase class
+from ..module.view.ViewModule import ViewModuleClass    # ViewModule
 from ..module.ViewGrid import ViewGridClass             # view class
 from ..module.Redirect import RedirectClass             # Redirect
 from ..module.Query import Query                        # all sql
@@ -18,6 +19,9 @@ class mainView(View):
       self._table = "T_PLANS";
       self._viewIns = None;
       self._sendValIns = None;
+      self._authNum = '';
+      self._selecter = [];
+      self._vm = '';
       self._sql = '';
       self._veiw = 'mainView.html';
   
@@ -32,6 +36,12 @@ class mainView(View):
       
       # DB接続
       try:
+          # auth check
+          self._vm = ViewModuleClass();
+          self._authNum = self._vm.Auth(request);
+          self._selecter = self._vm.AuthSelect();
+          
+          # main proc
           mes = request.GET.get("mes");
           if mes == None:
               mes = "";
@@ -60,6 +70,8 @@ class mainView(View):
             'message': veiwMesTag.replace(BindMes,mes),
             'SalesResult': self._viewIns.GetGrid(),
             'PlotGrafImg': '<img class="GrafImg" src="' + dirPathIns.GetUrlHost() + dirPathIns.GetSelfToStaticImgRelativeDirPath() + 'out.png' + '" alt="Graph" title="分析結果">',
+            'authState' : self._authNum,
+            'selecter' : self._selecter
           }
       except Exception as e:
           print('[DB Connection Error]', e)

@@ -10,7 +10,31 @@ class SendValueShareClass:
         self._result = [];
         self._collum = [];
         self._work = [];
+        self._data = None;
         pass
+
+    # send data convert
+    def GetData(self):
+        col = 0;
+        if self._request != None:
+            if self._request.method == "POST":
+                if len(self._collum) > 0:
+                    for col in range(len(self._collum)):
+                        self._work.append( self._request.POST.getlist(str(self._collum[col])) );
+                    self.ResultCreate(self._work);
+                else:
+                    pass; # 結果0件で返却。
+            else: # get
+                if len(self._collum) > 0:
+                    for col in range(len(self._collum)):
+                        self._work.append( self._request.GET.getlist(str(self._collum[col])) );
+                    ResultCreate(self._work);
+                else:
+                    pass; # 結果0件で返却。
+        elif self._dataArray != None:
+            #for col in range(len(self._collum)):
+                #self._work[col] = self._request.POST.getlist(str(self._collum[col]));
+            pass;
 
     # send data conversion
     def SendDataConversion(self):

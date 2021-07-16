@@ -15,6 +15,56 @@
   line-height: 40px;
   z-index:90;
 }
+#header li{
+  list-style:none;
+}
+#header li.title{
+  width:80%;
+  float:left;
+}
+#header li.auth{
+  float:left;
+}
+li.login,li.logout{
+  float:left;
+}
+#header #auth{
+  width:90px;
+  height:25px;
+  padding:2px;
+  border-radius:5%;
+  border:1px dotted #ABA572;
+}
+#header li.login input[type="button"]{
+  width:60px;
+  height:25px;
+  text-align:center;
+  background-color: #ABA361;
+  padding:1px 2.5px 1px 2.5px;
+  margin:6px 0 0 5px;
+  border:1px dotted #ABA572;
+  border-radius:5%;
+  color:white;
+  display:block;
+}
+#header li.login input[type="button"]:hover{
+  background-color: #ABA994;
+}
+#header li.logout input[type="button"]{
+  width:60px;
+  height:25px;
+  text-align:center;
+  background-color: #D3D9E0;
+  padding:1px 2.5px 1px 2.5px;
+  margin:6px 0 0 5px;
+  border:1px dotted #ABA572;
+  border-radius:5%;
+  color:black;
+  display:block;
+}
+#header li.logout input[type="button"]:hover{
+  background-color: #ABA994;
+}
 
 #header h1{
   color:white;

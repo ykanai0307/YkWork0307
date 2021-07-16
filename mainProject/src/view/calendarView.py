@@ -9,7 +9,8 @@ from ..module.DateTimeControl import DateTimeControlClass; # datetime edit
 from ..module.DataBase import DataBaseClass             # DBbase class
 from ..define.DBModeEnum import DBMode                  # DB mode(sqllite mysql)
 from ..module.Query import Query                        # all sql
-from ..module.SendValueShare import SendValueShareClass # [post get list] convert
+from ..module.SendValueShare import SendValueShareClass # [post get list] conver
+from ..module.view.ViewModule import ViewModuleClass    # ViewModulet
 from .mainView import mainView
 from django.shortcuts import render;                    # disp rendering
 from django.views.generic import View;
@@ -28,6 +29,10 @@ class calendarView(View):
       self._send = "";
       self._mes = "";
       
+      self._authNum = '';
+      self._selecter = [];
+      self._vm = '';
+      
       self._data = [];
       self._html = [];
       
@@ -35,6 +40,12 @@ class calendarView(View):
   # get
   def get(self, request, *args, **kwargs):
       try:
+          # auth check
+          self._vm = ViewModuleClass();
+          self._authNum = self._vm.Auth(request);
+          self._selecter = self._vm.AuthSelect();
+          
+          # main proc
           self._mes = request.GET.get("mes");
           if self._mes == None:
               self._mes = "get";
@@ -43,6 +54,8 @@ class calendarView(View):
           self._mes = e;
       context = {
           'message': self._mes,
+          'authState' : self._authNum,
+          'selecter' : self._selecter
       };
       return render(request, self._veiw, context);
   # post
@@ -132,13 +145,13 @@ class calendarView(View):
                   # submit
                   cls._db.DbCommit();
                   cls._db.DbCloseCursor();
-                  cls._mes = "[" + str(Date) + " " + str(Memo) + "] calendar create success";
+                  cls._mes = "[" + str(Date) + " " + str(Memo) + "] calendar regist success";
                   
           except Exception as e:
-              cls._mes = "calendar create faild [" + str(e) + "]";
+              cls._mes = "calendar faild [" + str(e) + "]";
           pass;
       else: # GET
-          cls._mes = "calendar create faild (get)";
+          cls._mes = "calendar faild (get)";
           raise Http404;
       # Response return
       if cls._mes == "":

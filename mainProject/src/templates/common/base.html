@@ -17,7 +17,25 @@
 <body>
   <form name="MainForm" id="MainForm"><!-- FORM START -->
   <div id="header">
-      <h1>Portfalio</h1>
+      <ul class="clearfix">
+        <li class="title"><h1>Portfalio</h1></li>
+        {% if authState == None %}
+        <li class="auth">
+          <select name="auth" id="auth">
+            <option value="1" {{ selecter.1 }}>general</option>
+            <option value="0" {{ selecter.0 }}>admin</option>
+          </select>
+        </li>
+        <li class="login">
+          <input type="button" name="login" id="login" value="login"/>
+        </li>
+        {% endif %}
+        {% if authState != None %}
+        <li class="logout">
+          <input type="button" name="logout" id="logout" value="logout"/>
+        </li>
+        {% endif %}
+      </ul>
   </div><!-- header -->
   <div id="container" class="clearfix">
       <div id="hamburger-menu" class="hamburger-menu">
@@ -28,12 +46,14 @@
           <li class="ButtonOverPos">
               <input type="button" name="Menu" value="MENU" onclick="SubmitTarget('./','get')" />
           </li>
+          {% if authState != None and authState < 1 %}
           <li class="ButtonOverPos">
               <input type="button" name="Main" value="MAIN" onclick="SubmitTarget('main','get')" />
           </li>
           <li>
               <input type="button" name="Calender" value="CALENDAR" onclick="SubmitTarget('calendar_view','get')" />
           </li>
+          {% endif %}
       </ul>
 {% block body %}
 {% endblock %}
