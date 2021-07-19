@@ -32,6 +32,7 @@ class calendarView(View):
       self._authNum = '';
       self._selecter = [];
       self._vm = '';
+      self._pc = False;
       
       self._data = [];
       self._html = [];
@@ -40,8 +41,10 @@ class calendarView(View):
   # get
   def get(self, request, *args, **kwargs):
       try:
-          # auth check
           self._vm = ViewModuleClass();
+          # user agent
+          self._pc = self._vm.UserAgent(request);
+          # auth check
           self._authNum = self._vm.Auth(request);
           self._selecter = self._vm.AuthSelect();
           
@@ -55,7 +58,8 @@ class calendarView(View):
       context = {
           'message': self._mes,
           'authState' : self._authNum,
-          'selecter' : self._selecter
+          'selecter' : self._selecter,
+          'pc' : self._pc
       };
       return render(request, self._veiw, context);
   # post
@@ -116,6 +120,7 @@ class calendarView(View):
                   cls._data = [(cls._authNum)];
                   
               elif Mode == "Set":
+                  # click to date memo
                   valueList = ( str(Date + " 01:01:01"),0, );
                   cls._data = cls.SelectSql(valueList);
                   

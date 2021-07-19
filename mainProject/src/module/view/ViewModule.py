@@ -1,4 +1,5 @@
-from ..Session import SessionClass  # Session
+from ..Session import SessionClass        # Session
+from ..UserAgent import UserAgentClass    # User Agent
 
 # 画面用コントローラ
 class ViewModuleClass:
@@ -8,6 +9,7 @@ class ViewModuleClass:
         self._ses = "";
         self._auth = "";
         self._selecter = [];
+        self._agent = "";
         pass
 
     # auth get
@@ -26,3 +28,15 @@ class ViewModuleClass:
         else:
             self._selecter = ["","selected"];
         return self._selecter;
+    
+    # user agent
+    def UserAgent(self,request):
+        pc = False;
+        self._agent = UserAgentClass();
+        self._agent.SetAgent(str(request.META["HTTP_USER_AGENT"]));
+        self._agent.MobileOrPc();
+        if self._agent.GetPc() == True:
+            pc = True;
+        elif self._agent.GetMoblie() == True:
+            pc = False;
+        return pc;

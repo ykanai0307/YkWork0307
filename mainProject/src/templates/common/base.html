@@ -5,8 +5,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link rel="icon" type="image/png" href="{% static 'img/out.png' %}">
+  {% if pc == True %}
   <link href="{% static 'css/menu.css' %}" rel="stylesheet">
   <link href="{% static 'css/common.css' %}" rel="stylesheet">
+  {% else %}
+  <link href="{% static 'css/mobile/menu.css' %}" rel="stylesheet">
+  <link href="{% static 'css/mobile/common.css' %}" rel="stylesheet">
+  {% endif %}
   <link href="{% static 'css/calendar.css' %}" rel="stylesheet">
   <script type="text/javascript" src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/holiday.js' %}"></script>

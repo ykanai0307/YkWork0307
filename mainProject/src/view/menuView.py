@@ -1,6 +1,7 @@
 import sys
 import urllib.request
 from django.shortcuts import render                     # disp rendering
+from ..module.UserAgent import UserAgentClass           # User Agent
 from ..module.Auth import AuthClass                     # Auth
 from ..module.Session import SessionClass               # Session
 from ..module.view.ViewModule import ViewModuleClass    # ViewModule
@@ -13,22 +14,28 @@ class menuView(View):
   def __init__(self, **kwargs):
       self._mes = '';
       self._auth = '';
+      self._agent = '';
       self._authNum = '';
       self._vm = '';
       self._ses = '';
       self._selecter = [];
+      self._pc = False;
       self._veiw = 'menuView.html';
   
   # GET_METHOD
   def get(self, request, *args, **kwargs):
       try:
           self._vm = ViewModuleClass();
+          # user agent
+          self._pc = self._vm.UserAgent(request);
+          # auth
           self._authNum = self._vm.Auth(request);
           self._selecter = self._vm.AuthSelect();
           context = {
             'message': self._mes,
             'authState' : self._authNum,
-            'selecter' : self._selecter
+            'selecter' : self._selecter,
+            'pc' : self._pc,
           }
       except Exception as e:
           print('[DB Connection Error]', e)

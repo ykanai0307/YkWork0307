@@ -23,6 +23,7 @@ class mainView(View):
       self._selecter = [];
       self._vm = '';
       self._sql = '';
+      self._pc = False;
       self._veiw = 'mainView.html';
   
   # GET_METHOD
@@ -36,8 +37,10 @@ class mainView(View):
       
       # DB接続
       try:
-          # auth check
           self._vm = ViewModuleClass();
+          # user agent
+          self._pc = self._vm.UserAgent(request);
+          # auth check
           self._authNum = self._vm.Auth(request);
           self._selecter = self._vm.AuthSelect();
           
@@ -71,7 +74,8 @@ class mainView(View):
             'SalesResult': self._viewIns.GetGrid(),
             'PlotGrafImg': '<img class="GrafImg" src="' + dirPathIns.GetUrlHost() + dirPathIns.GetSelfToStaticImgRelativeDirPath() + 'out.png' + '" alt="Graph" title="分析結果">',
             'authState' : self._authNum,
-            'selecter' : self._selecter
+            'selecter' : self._selecter,
+            'pc' : self._pc,
           }
       except Exception as e:
           print('[DB Connection Error]', e)
