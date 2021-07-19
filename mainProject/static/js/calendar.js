@@ -32,6 +32,23 @@ $(function(){
             pos = num % 7;
             var label = $('#CalenderView').find('label.Week')[pos];
             
+            // CalenderPopUp create
+            var popUpHtml = CreatePopUp();
+            
+            // CalenderPopUp view set
+            $('#CalenderPopUpView').html(popUpHtml);
+            
+            // auth check(none general admin)
+            postData = {};
+            postData['Mode'] = "Auth";
+            var url = "/mainProject/calendar_popup_click";
+            var authList = post(url,false,postData,"Set",getCookie("csrftoken"));
+            if( ( (authList != undefined) && (authList == "") ) || ( (authList != undefined) && (authList == "1") ) ){
+                $("#PopUpRegist").prop("disabled", true);  // popup regist disabled
+            }else{
+                $("#PopUpRegist").prop("disabled", false); // popup regist enabled
+            }
+            
             // select (year month date) set
             var lblTmp = lbl[0].innerText.replace("〇", "").split('\n');
             currentDateTime = new Date(hankakuZenkaku($('#year')[0].innerText).toString(), zeroPadding(hankakuZenkaku($('#month')[0].innerText),2).toString(), zeroPadding(hankakuZenkaku(Number(lblTmp[0]).toString()),2).toString(), "01", "01", "01");
@@ -48,12 +65,6 @@ $(function(){
             if(lblTmp.length > 0 && lblTmp[0] == ""){
                 return true;
             }
-            
-            // CalenderPopUp create
-            var popUpHtml = CreatePopUp();
-            
-            // CalenderPopUp view set
-            $('#CalenderPopUpView').html(popUpHtml);
             
             // Label to date
             var holidayLabel = "";

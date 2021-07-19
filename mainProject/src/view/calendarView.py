@@ -109,16 +109,25 @@ class calendarView(View):
               if request.POST.get('postData[Date]') != None:
                   Date = request.POST.get('postData[Date]');
 
-              if Mode == "Set":
+              if Mode == "Auth":
+                  # auth check
+                  cls._vm = ViewModuleClass();
+                  cls._authNum = cls._vm.Auth(request);
+                  cls._data = [(cls._authNum)];
+                  print(cls._data);
+                  
+              elif Mode == "Set":
                   valueList = ( str(Date + " 01:01:01"),0, );
                   cls._data = cls.SelectSql(valueList);
-              if Mode == "SetAll":
+                  
+              elif Mode == "SetAll":
                   if request.POST.get('postData[startDate]') != None:
                       StartDate = request.POST.get('postData[startDate]');
                   if request.POST.get('postData[endDate]') != None:
                       EndDate = request.POST.get('postData[endDate]');
                   valueList = ( str(StartDate),str(EndDate),0, );
                   cls._data = cls.SelectSql(valueList,"Turm");
+                  
               elif Mode == "Regist":
                   if request.POST.get('postData[Memo]') != None:
                       Memo = request.POST.get('postData[Memo]');
