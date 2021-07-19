@@ -33,6 +33,7 @@ li.login,li.logout{
   height:25px;
   padding:2px;
   border-radius:5%;
+  margin:6px 0 0 5px;
   border:1px dotted #ABA572;
 }
 #header li.login input[type="button"]{
@@ -56,7 +57,7 @@ li.login,li.logout{
   text-align:center;
   background-color: #D3D9E0;
   padding:1px 2.5px 1px 2.5px;
-  margin:6px 0 0 5px;
+  margin:6px 0 0 95%;
   border:1px dotted #ABA572;
   border-radius:5%;
   color:black;

@@ -71,7 +71,7 @@ ul#Menu li input{
   border-radius:1px;
   display: block;
   letter-spacing:1px;
-  font-size:8px;
+  font-size:6px;
   z-index:90;
 }
 ul#Menu li input:hover{
@@ -85,12 +85,16 @@ ul#Menu li input:hover{
   height:auto;
   display:block;
 }
+ul#ImgTag{
+  margin-top:10px;
+}
 #ImgTag li{
   float:left;
   margin-bottom:20px;
   list-style: none;
 }
 #ImgTag li a{
+  margin-left:10px;
   display:block;
 }
 a.ileft,a.icenter{
