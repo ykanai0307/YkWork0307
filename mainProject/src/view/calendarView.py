@@ -114,7 +114,6 @@ class calendarView(View):
                   cls._vm = ViewModuleClass();
                   cls._authNum = cls._vm.Auth(request);
                   cls._data = [(cls._authNum)];
-                  print(cls._data);
                   
               elif Mode == "Set":
                   valueList = ( str(Date + " 01:01:01"),0, );
