@@ -23,6 +23,21 @@ $(function(){
         }
     });
     
+    $('#header').on('change','#auth',function(){
+        try {
+            var val = $(this).val();
+            if(val == 0){
+                $("li.userid").css('visibility','visible');
+                $("li.pass").css('visibility','visible');
+            }else{
+                $("li.userid").css('visibility','collapse');
+                $("li.pass").css('visibility','collapse');
+            }
+        } catch(e) {
+            alert("select change faild [" + e.message + "]");
+        }
+    });
+    
     // logout
     $('#header').on('click','#logout',function(){
         try {

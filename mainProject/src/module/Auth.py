@@ -40,7 +40,24 @@ class AuthClass:
             self._db.DbRollback();
             raise;
 
-    # (privateMethod)Auth
+    # LoginCheck
+    def LoginCheck(self,userid,password):
+        try:
+            if ( userid == "admin" ) and ( password == "admin01" ):
+                return True;
+            else:
+                return False;
+        except Exception as e:
+            return False;
+    
+    # auth clear
+    def AuthClear(self):
+        try:
+            self.SetAuth( (None,"") );
+        except Exception as e:
+            return False;
+
+    # (privateMethod)Auth create
     @classmethod
     def AuthCreate(cls,db,query,datetime):
         try:

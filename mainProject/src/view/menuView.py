@@ -46,26 +46,41 @@ class menuView(View):
   # POST_METHOD
   def post(self, request, *args, **kwargs):
       try:
+          self._vm = ViewModuleClass();
+          # user agent
+          self._pc = self._vm.UserAgent(request);
+      
+          # login check
           self._auth = AuthClass();
-          self._ses = SessionClass(request);
-          self._ses.SetExp(1800); # 30 sec
           if request.POST.get("auth") != None:
               self._auth.SetFormAuth(request.POST.get("auth"));
           self._auth.Auth();
+          if (int(self._auth.GetFormAuth()) < 1) and ( (request.POST.get("userid") != None) and (request.POST.get("userid") != "") ) and ( (request.POST.get("pass") != None) and (request.POST.get("pass") != "") ):
+              if( self._auth.LoginCheck(request.POST.get("userid"),request.POST.get("pass")) ):
+                  pass; # admin login OK
+              else:
+                  self._auth.AuthClear();
+          else:
+              self._auth.AuthClear();
+          
+          # session
+          self._ses = SessionClass(request);
+          self._ses.SetExp(1800); # 30 sec
           self._ses.DelKey('Auth');
           self._ses.SetValue('Auth',self._auth.GetAuth()[0]);
           auth = self._ses.GetValue('Auth');
           if auth != None :
-              if int(auth) < 1:
-                self._selecter = ["selected",""];
+              if int(auth) < 1: # admin
+                  self._selecter = ["selected",""];
               else:
-                self._selecter = ["","selected"];
+                  self._selecter = ["","selected"];
           else:
               self._selecter = ["","selected"];
           context = {
               'message': 'test',
               'authState' : self._ses.GetValue('Auth'),
-              'selecter' : self._selecter
+              'selecter' : self._selecter,
+              'pc' : self._pc,
           };
       except Exception as e:
           print('[DB Connection Error]', e)

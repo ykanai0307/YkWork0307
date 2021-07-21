@@ -25,6 +25,14 @@
       <ul class="clearfix">
         <li class="title"><h1>Portfalio</h1></li>
         {% if authState == None %}
+        <li class="userid">
+          <label for="userid" class="lblUserid">user：</label>
+          <input type="text" name="userid" id="userid"/>
+        </li>
+        <li class="pass">
+          <label for="pass" class="lblPass">password：</label>
+          <input type="password" name="pass" id="pass"/>
+        </li>
         <li class="auth">
           <select name="auth" id="auth">
             <option value="1" {{ selecter.1 }}>general</option>
