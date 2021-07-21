@@ -25,6 +25,14 @@
 #header li.auth{
   float:left;
 }
+#header li.userid{
+  float:left;
+  visibility:collapse;
+}
+#header li.pass{
+  float:left;
+  visibility:collapse;
+}
 li.login,li.logout{
   float:left;
 }
@@ -35,6 +43,25 @@ li.login,li.logout{
   border-radius:5%;
   margin:6px 0 0 5px;
   border:1px dotted #ABA572;
+}
+.lblUserid,.lblPass{
+  color:white;
+}
+#header li.userid input[type="text"]{
+  width:75px;
+  height:25px;
+  margin:6px 15px 0 0;
+  padding:0.5px 0.5px 0.5px 2px;
+  border:1px dotted #ABA572;
+  border-radius:5%;
+}
+#header li.pass input[type="password"]{
+  width:75px;
+  height:25px;
+  margin:6px 20px 0 0;
+  padding:0.5px 0.5px 0.5px 2px;
+  border:1px dotted #ABA572;
+  border-radius:5%;
 }
 #header li.login input[type="button"]{
   width:50px;
