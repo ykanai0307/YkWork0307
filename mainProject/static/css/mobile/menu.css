@@ -1,13 +1,13 @@
 .menu-btn {
     position: fixed;
-    top: 40px;
-    left: 0px;
+    top: 50px;
+    left: 10px;
     display: flex;
-    height: 22px;
-    width: 22px;
+    height: 18px;
+    width: 18px;
     justify-content: center;
     align-items: center;
-    z-index: 90;
+    z-index: 101;
     background-color: #732C2C;
 }
 .menu-btn span,
@@ -15,8 +15,8 @@
 .menu-btn span:after {
     content: '';
     display: block;
-    height: 3px;
-    width: 25px;
+    height: 2px;
+    width: 18px;
     border-radius: 3px;
     background-color: #ffffff;
     position: absolute;
@@ -49,12 +49,12 @@
 /* menu button */
 ul#Menu{
   position: fixed;
-  top: 40px;
-  left: 0px;
+  top: 50px;
+  left: 10px;
   width:15%;
-  padding:30px 0.5% 1% 0;
+  padding:30px 0.5% 1% 2%;
   background-color: #732C2C;
-  z-index:1;
+  z-index: 100;
 }
 ul#Menu li{
   list-style: none;
@@ -72,7 +72,7 @@ ul#Menu li input{
   display: block;
   letter-spacing:1px;
   font-size:6px;
-  z-index:90;
+  z-index:100;
 }
 ul#Menu li input:hover{
   opacity:0.8;

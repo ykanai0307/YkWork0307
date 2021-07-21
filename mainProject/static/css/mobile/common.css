@@ -10,8 +10,8 @@
   left: 0px;
   width:100%;
   background-color: #732C2C;
-  padding-left: 20px;
-  height: 40px;
+  padding-left: 10px;
+  height: 100px;
   line-height: 40px;
   z-index:90;
 }
@@ -19,7 +19,7 @@
   list-style:none;
 }
 #header li.title{
-  width:50%;
+  width:20%;
   float:left;
 }
 #header li.auth{
@@ -41,14 +41,17 @@ li.login,li.logout{
   height:25px;
   padding:2px;
   border-radius:5%;
-  margin:6px 0 0 5px;
+  margin:6px 0 0 105px;
   border:1px dotted #ABA572;
 }
 .lblUserid,.lblPass{
   color:white;
 }
+label.lblUserid,label.lblPass{
+  font-size:10px;
+}
 #header li.userid input[type="text"]{
-  width:75px;
+  width:50px;
   height:25px;
   margin:6px 15px 0 0;
   padding:0.5px 0.5px 0.5px 2px;
@@ -56,7 +59,7 @@ li.login,li.logout{
   border-radius:5%;
 }
 #header li.pass input[type="password"]{
-  width:75px;
+  width:50px;
   height:25px;
   margin:6px 20px 0 0;
   padding:0.5px 0.5px 0.5px 2px;
@@ -69,7 +72,7 @@ li.login,li.logout{
   text-align:center;
   background-color: #ABA361;
   padding:1px 2.5px 1px 2.5px;
-  margin:6px 0 0 5px;
+  margin:6px 0 0 50px;
   border:1px dotted #ABA572;
   border-radius:5%;
   color:white;
@@ -101,7 +104,7 @@ li.login,li.logout{
   min-height:100%;
   height: auto;
   background-color: #EFF7CF;
-  padding-top:3%;
+  padding-top:22%;
 }
 div#WebFormErea{
   float:left;
