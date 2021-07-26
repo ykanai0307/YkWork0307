@@ -110,20 +110,14 @@ div#WebFormErea{
   float:left;
   position:relative;
   top:40px;
-  width:75%;
-  margin:0% 15%;
+  width:96%;
+  margin:0% 2%;
   padding-bottom:20px;
-}
-div#MenuErea{
-  float:left;
-  width:20%;
-  background-color: white;
 }
 
 /* table start */
 table#WebForm{
-  width:85%;
-  margin-left:3%;
+  width:100%;
   background-color: white;
   border-collapse:collapse;
   border-radius:1%;
@@ -167,10 +161,6 @@ table#SalesTable tr.body td{
 table#SalesTable input[type="text"] ,table#SalesTable input[type="tel"] ,input[type="checkbox"]{
   padding:2px 2px 2px 3px;
 }
-.GrafImg{
-  width:50%;
-  min-height:60%;
-}
 
 /*DB analyze end*/
 
@@ -180,6 +170,7 @@ input[type="button"].SubmitDesign{
   text-align:center;
   background-color: #ABA361;
   padding:1px 2.5px 1px 2.5px;
+  margin-right:15px;
   border:1px dotted #ABA572;
   border-radius:5%;
   color:white;

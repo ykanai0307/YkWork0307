@@ -86,7 +86,7 @@ ul#Menu li input:hover{
   display:block;
 }
 ul#ImgTag{
-  margin-top:10px;
+  margin:10px 0 0 12%;
 }
 #ImgTag li{
   float:left;

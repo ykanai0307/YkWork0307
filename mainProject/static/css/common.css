@@ -99,39 +99,34 @@ li.login,li.logout{
   color:white;
 }
 #container{
+  width:100%;
   min-height:100%;
   height: auto;
   background-color: #EFF7CF;
   padding-top:3%;
 }
 div#WebFormErea{
-  float:left;
+  width:100%;
   position:relative;
+  background-color: #EFF7CF;
   top:40px;
-  width:75%;
-  margin:0% 15%;
+  margin:0% 5%;
   padding-bottom:20px;
-}
-div#MenuErea{
-  float:left;
-  width:20%;
-  background-color: white;
 }
 
 /* table start */
 table#WebForm{
-  /*width:85%;*/
-  width:auto;
+  width:600px;
   margin-left:3%;
   background-color: white;
   border-collapse:collapse;
   border-radius:1%;
 }
 table#WebForm td.tdHeader{
-  padding:3% 0 0 2%;
+  padding:3% 2% 0 2%;
 }
 table#WebForm td.tdContent{
-  padding:0.5% 0 0 2%;
+  padding:0.5% 2% 0 2%;
 }
 table#WebForm td.tdEnd{
   padding:0 0 2% 0;
@@ -166,10 +161,6 @@ table#SalesTable tr.body td{
 table#SalesTable input[type="text"] ,table#SalesTable input[type="tel"] ,input[type="checkbox"]{
   padding:2px 2px 2px 3px;
 }
-.GrafImg{
-  width:50%;
-  min-height:60%;
-}
 
 /*DB analyze end*/
 
@@ -180,7 +171,7 @@ input[type="button"].SubmitDesign{
   background-color: #ABA361;
   padding:1px 2.5px 1px 2.5px;
   border:1px dotted #ABA572;
-  border-radius:5%;
+  border-radius:5%;s
   color:white;
 }
 input[type="button"].SubmitDesign:hover{

@@ -61,7 +61,7 @@ class menuView(View):
               else:
                   self._auth.AuthClear();
           else:
-              self._auth.AuthClear();
+              pass;
           
           # session
           self._ses = SessionClass(request);
@@ -78,7 +78,7 @@ class menuView(View):
               self._selecter = ["","selected"];
           context = {
               'message': 'test',
-              'authState' : self._ses.GetValue('Auth'),
+              'authState' : auth,
               'selecter' : self._selecter,
               'pc' : self._pc,
           };
