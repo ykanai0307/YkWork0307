@@ -3,8 +3,8 @@
     top: 40px;
     left: 0px;
     display: flex;
-    height: 40px;
-    width: 40px;
+    height: 35px;
+    width: 35px;
     justify-content: center;
     align-items: center;
     z-index: 90;
@@ -51,8 +51,8 @@ ul#Menu{
   position: fixed;
   top: 40px;
   left: 0px;
-  width:8.5%;
-  padding:50px 0.5% 0.5% 1%;
+  width:75px;
+  padding:50px 0.5% 0.5% 0.2%;
   background-color: #732C2C;
   z-index:1;
 }
@@ -64,6 +64,7 @@ ul#Menu li.ButtonOverPos{
 }
 ul#Menu li input{
   padding:2px;
+  font-size:11px;
   border-color:#EFF7CF;
   background: #732C2C;
   color:#FFFFF5;
@@ -94,28 +95,4 @@ ul#Menu li input:hover{
 }
 a.ileft,a.icenter{
   margin-right:20px;
-}
-
-@media screen and (min-width:480px) and ( max-width:1024px) {
-  .Img{
-    width:200px;
-    height:auto;
-  }
-  #ImgTag li{
-    list-style: none;
-  }
-  .menu-btn{
-    height: 22px;
-    width: 22px;
-  }
-  ul#Menu{
-    width:15%;
-    padding:30px 0.5% 1% 0;
-  }
-  ul#Menu li.ButtonOverPos{
-    padding-bottom:10px;
-  }
-  ul#Menu li input{
-    font-size:8px;
-  }
 }
