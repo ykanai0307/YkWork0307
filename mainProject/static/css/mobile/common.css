@@ -33,8 +33,14 @@
   float:left;
   visibility:collapse;
 }
-li.login,li.logout{
+li.login{
   float:left;
+}
+li.logout{
+  position: fixed;
+  top: 0px;
+  left: 155px;
+  float:right;
 }
 #header #auth{
   width:90px;
@@ -67,7 +73,7 @@ label.lblUserid,label.lblPass{
   border-radius:5%;
 }
 #header li.login input[type="button"]{
-  width:50px;
+  width:52px;
   height:25px;
   text-align:center;
   background-color: #ABA361;
@@ -82,7 +88,7 @@ label.lblUserid,label.lblPass{
   background-color: #ABA994;
 }
 #header li.logout input[type="button"]{
-  width:50px;
+  width:52px;
   height:25px;
   text-align:center;
   background-color: #D3D9E0;
@@ -139,6 +145,7 @@ span.Mark{
   color:#732C2C;
 }
 .FormTitle{
+  margin-left:2px;
   color:#424539;
 }
 
@@ -165,8 +172,8 @@ table#SalesTable input[type="text"] ,table#SalesTable input[type="tel"] ,input[t
 /*DB analyze end*/
 
 input[type="button"].SubmitDesign{
-  width:140px;
-  height:25px;
+  width:95px;
+  height:20px;
   text-align:center;
   background-color: #ABA361;
   padding:1px 2.5px 1px 2.5px;

@@ -33,9 +33,15 @@
 #header li.auth{
   float:left;
 }
-li.login,li.logout{
+li.login{
   float:left;
 }
+li.logout{
+  position: fixed;
+  top: 0px;
+  left: 1210px;
+}
+
 #header #auth{
   width:90px;
   height:25px;
